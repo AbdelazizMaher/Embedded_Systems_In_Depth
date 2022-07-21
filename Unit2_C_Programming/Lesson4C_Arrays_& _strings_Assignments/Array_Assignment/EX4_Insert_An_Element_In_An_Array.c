@@ -10,7 +10,7 @@
 int main()
 {
 	int arr[50];
-	int size=5,element=6,Index=2,i,j;
+	int size,element,Index,i,j;
 
     printf("Enter no of elements : ");
     fflush(stdout);fflush(stdin);
