@@ -11,7 +11,7 @@ int calc_power(int base,int power);
 
 int main()
 {
-	int base,power;
+    int base,power;
 
     printf("Enter base number : ");
     fflush(stdout);
