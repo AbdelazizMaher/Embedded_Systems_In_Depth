@@ -12,7 +12,7 @@ void reverse_sentence(char reverse[], int length);
 
 int main()
 {
-	char sentence[50] ="ab";
+    char sentence[50] ="ab";
 
     printf("Enter a sentence : ");
     fflush(stdout);
