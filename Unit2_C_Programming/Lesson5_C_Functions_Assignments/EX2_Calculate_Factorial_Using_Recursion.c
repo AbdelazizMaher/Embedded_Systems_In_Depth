@@ -18,10 +18,10 @@ int main()
 	fflush(stdout);
 	scanf("%d",&value);
 
-    // calculate factorial
+       // calculate factorial
 	printf("factorial of %d = %d", value , calc_factorial(value) );
 
-    return 0;
+        return 0;
 }
 
 
