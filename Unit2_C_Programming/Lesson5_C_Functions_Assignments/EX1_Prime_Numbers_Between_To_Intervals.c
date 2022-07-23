@@ -14,7 +14,7 @@ void calc_prime_in_interval(int min,int max);
 
 int main()
 {
-	int min_value,max_value;
+    int min_value,max_value;
 
     printf("Enter two numbers(intervals) : ");
     fflush(stdout);
@@ -30,7 +30,7 @@ int main()
 
 void calc_prime_in_interval(int min,int max)
 {
-	int i,j;
+    int i,j;
     int interval = (max - min);
 
     if( max == 1)
