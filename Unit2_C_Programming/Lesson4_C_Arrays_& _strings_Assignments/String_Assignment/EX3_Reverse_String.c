@@ -11,7 +11,7 @@
 int main()
 {
     char str[100],Rev_str[100];
-	int i;
+    int i;
 
     printf("Enter a string : ");
     fflush(stdout);
@@ -22,7 +22,6 @@ int main()
     Rev_str[i] = 0;
 
     printf("Reverse string is %s ",Rev_str);
-
-
+	
     return 0;
 }
