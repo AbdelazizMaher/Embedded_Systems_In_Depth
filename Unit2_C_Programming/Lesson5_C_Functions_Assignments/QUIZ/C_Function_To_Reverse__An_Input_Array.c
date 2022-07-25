@@ -47,7 +47,7 @@ int main()
 void Reverse_array(int arr[],int length)
 {
 	int i,j;
-	for( i = 0 , j = (length-1) ; i< length-1 ; i++,j--)
+	for( i = 0 , j = (length-1) ; i< (length/2) ; i++,j--)
 	{
 		arr[i] = arr[i] + arr[j];
 		arr[j] = arr[i] - arr[j];
