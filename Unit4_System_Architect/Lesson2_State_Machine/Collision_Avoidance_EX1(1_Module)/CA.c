@@ -22,7 +22,7 @@ int generate_random(int l ,int r , int count)
 
 	for( i = 0 ; i < count ; i++ )
 	{
-		rand_num =(rand() % (r - l + 1 )) + 45;
+	    rand_num =(rand() % (r - l + 1 )) + 45;
 	    return rand_num;
 	}
 	return rand_num;
