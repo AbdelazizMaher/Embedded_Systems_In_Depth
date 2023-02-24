@@ -29,7 +29,6 @@ int generate_random(int l ,int r , int count)
 }
 
 
-
 STATE_define(Waiting)
 {
 	CA_State_Id = CA_WAITING;
