@@ -1,0 +1,96 @@
+/*
+ * Stm32f103c6_EXTI_Driver.c
+ *
+ *  Created on: Mar 1, 2023
+ *      Author: Abdelaziz Maher
+ */
+
+
+#include "../../MCAL/Inc/Stm32f103c6_EXTI_Driver.h"
+
+
+/*
+ *----------------------------------------------------------
+ * 				  Generic Variables
+ *----------------------------------------------------------
+ */
+
+
+
+/*
+ *----------------------------------------------------------
+ * 				  Generic Macros
+ *----------------------------------------------------------
+ */
+
+
+
+/*
+ *-----------------------------------------------------------
+ * 				  Generic Functions
+ *-----------------------------------------------------------
+ */
+
+
+/*
+ *-----------------------------------------------------------
+ * 				APIs Functions Definitions
+ *-----------------------------------------------------------
+ */
+
+
+/**================================================================
+ * @Fn			- MCAL_EXTI_GPIO_INIT
+ * @brief 		- Initialize EXTI from specific GPIO PIN and specify the Mask/Trigger Conditions and IRQ Callback
+ * @param [in]	- EXTI_Config: Set by @ref EXTI_define, EXTI_Trigger_define and EXTI_IRQ_define
+ * @retval 		- None
+ * Note			- STM32F103C6 MCU has GPIO A,B,C,D,E modules
+ * 				  but LQFP48 package has only GPIO A,B, part of C/D exported as external Pins from the modules
+ * 				- Also Mandatory to Enable RCC Clock for AFIO and the Corresponding GPIO
+ **================================================================*/
+void MCAL_EXTI_GPIO_INIT(EXTI_Pinconfig_t* EXTI_config)
+{
+
+}
+
+
+/**================================================================
+ * @Fn			- MCAL_EXTI_GPIO_DEINIT
+ * @brief 		- Reset EXTI registers and NVIC Corresponding IRQ Mask
+ * @param [in]	- None
+ * @retval 		- None
+ * Note			- None
+ **================================================================*/
+void MCAL_EXTI_GPIO_DEINIT(void)
+{
+	EXTI->IMR   = 0x00000000;
+	EXTI->EMR   = 0x00000000;
+	EXTI->RTSR  = 0x00000000;
+	EXTI->FTSR  = 0x00000000;
+	EXTI->SWIER = 0x00000000;
+	//rc_w1 cleared by writing a '1' into the PR
+	EXTI->PR    = 0xFFFFFFFF;
+
+	//Disable EXTI IRQ From NVIC
+	NVIC_IRQ6_EXTI0_DISABLE();
+	NVIC_IRQ7_EXTI1_DISABLE();
+	NVIC_IRQ8_EXTI2_DISABLE();
+	NVIC_IRQ9_EXTI3_DISABLE();
+	NVIC_IRQ10_EXTI4_DISABLE();
+	NVIC_IRQ23_EXTI5_9_DISABLE();
+	NVIC_IRQ40_EXTI10_15_DISABLE();
+}
+
+/**================================================================
+ * @Fn			- MCAL_EXTI_GPIO_UPDATE
+ * @brief 		- Initialize EXTI from specific GPIO PIN and specify the Mask/Trigger Conditions and IRQ Callback
+ * @param [in]	- EXTI_Config: Set by @ref EXTI_define, EXTI_Trigger_define and EXTI_IRQ_define
+ * @retval 		- None
+ * Note			- STM32F103C6 MCU has GPIO A,B,C,D,E modules
+ * 				  but LQFP48 package has only GPIO A,B, part of C/D exported as external Pins from the modules
+ * 				- Also Mandatory to Enable RCC Clock for AFIO and the Corresponding GPIO
+ **================================================================*/
+void MCAL_EXTI_GPIO_UPDATE(EXTI_Pinconfig_t* EXTI_config)
+{
+
+}
