@@ -1,0 +1,39 @@
+/*
+ * Stm32f103x6.h
+ *
+ *  Created on: Feb 28, 2023
+ *      Author: Abdelaziz Maher
+ */
+
+#ifndef INC_STM32F103X6_H_
+#define INC_STM32F103X6_H_
+
+//-----------------------------
+//Includes
+//-----------------------------
+
+//-----------------------------
+//Base addresses for Memories
+//-----------------------------
+
+//-----------------------------
+//Base addresses for AHB Peripherals
+//-----------------------------
+
+//-----------------------------
+//Base addresses for APB2 Peripherals
+//-----------------------------
+
+//-*-*-*-*-*-*-*-*-*-*-*-
+//Peripheral register: GPIOx
+//-*-*-*-*-*-*-*-*-*-*-*
+
+//-*-*-*-*-*-*-*-*-*-*-*-
+//Peripheral Instants: RCC
+//-*-*-*-*-*-*-*-*-*-*-*
+
+//-*-*-*-*-*-*-*-*-*-*-*-
+//clock enable Macros:
+//-*-*-*-*-*-*-*-*-*-*-*
+
+#endif /* INC_STM32F103X6_H_ */

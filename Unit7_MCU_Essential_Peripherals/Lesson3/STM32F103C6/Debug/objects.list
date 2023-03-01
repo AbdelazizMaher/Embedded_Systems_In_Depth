@@ -1,0 +1,6 @@
+"./Drivers/Src/Stm32f103c6_EXTI_Driver.o"
+"./Drivers/Src/Stm32f103c6_GPIO_Driver.o"
+"./Src/main.o"
+"./Src/syscalls.o"
+"./Src/sysmem.o"
+"./Startup/startup_stm32f103c6tx.o"
