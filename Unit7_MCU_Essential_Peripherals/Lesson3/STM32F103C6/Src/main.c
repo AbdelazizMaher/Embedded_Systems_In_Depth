@@ -22,8 +22,8 @@
   #warning "FPU is not initialized, but the project is compiling for an FPU. Please initialize the FPU before use."
 #endif
 
-#include"Stm32f103x6.h"
-#include"Stm32f103c6_GPIO_Driver.h"
+#include"../MCAL/Inc/Stm32f103x6.h"
+#include"../MCAL/Inc/Stm32f103c6_GPIO_Driver.h"
 
 
 int main(void)
