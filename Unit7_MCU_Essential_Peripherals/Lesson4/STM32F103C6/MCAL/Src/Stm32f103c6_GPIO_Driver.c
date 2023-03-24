@@ -5,7 +5,7 @@
  *      Author: Abdelaziz Maher
  */
 
-#include "../../MCAL/Inc/Stm32f103c6_GPIO_Driver.h"
+#include "Stm32f103c6_GPIO_Driver.h"
 
 
 
@@ -51,7 +51,7 @@ uint8_t Get_CRLH_Position(uint16_t PinNumber)
 		return 28;
 		break;
 
-	//CRH
+		//CRH
 	case GPIO_PIN_8:
 		return 0;
 		break;

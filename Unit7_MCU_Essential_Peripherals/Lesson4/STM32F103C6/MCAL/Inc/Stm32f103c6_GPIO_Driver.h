@@ -11,7 +11,7 @@
 //-----------------------------------------------
 //Includes
 //-----------------------------------------------
-#include "../../MCAL/Inc/Stm32f103x6.h"
+#include "Stm32f103x6.h"
 
 
 
@@ -81,7 +81,7 @@ typedef struct
 6: Alternate function output Push-pull
 7: Alternate function output Open-drain
 8: Alternate function input (Floating input)
-*/
+ */
 
 #define GPIO_PIN_MODE_Analog						(0x00000000UL)   /*Analog mode*/
 #define GPIO_PIN_MODE_INPUT_FLOA					(0x00000001UL)   /*Floating input mode*/
@@ -99,7 +99,7 @@ typedef struct
 1: Output mode, max speed 10 MHz.
 2: Output mode, max speed 2 MHz.
 3: Output mode, max speed 50 MHz.
-*/
+ */
 
 #define GPIO_PIN_SPEED_10MHZ						(0x00000001UL)    /*max speed 10 MHz*/
 #define GPIO_PIN_SPEED_2MHZ							(0x00000002UL)    /*max speed 2 MHz*/
@@ -107,10 +107,10 @@ typedef struct
 
 
 /*
-* =======================================================================================
-*                         APIs Supported by "MCAL GPIO DRIVER"
-* =======================================================================================
-*/
+ * =======================================================================================
+ *                         APIs Supported by "MCAL GPIO DRIVER"
+ * =======================================================================================
+ */
 
 void MCAL_GPIO_Init(GPIO_TypeDef *GPIOx , GPIO_PinConfig_t *Pin_Config);
 void MCAL_GPIO_DeInit(GPIO_TypeDef *GPIOx);
