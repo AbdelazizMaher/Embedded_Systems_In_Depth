@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 
+
 //----------------------------------------------
 //Base addresses for Memories
 //----------------------------------------------
@@ -36,12 +37,14 @@
 #define NVIC_ICER1									 *( volatile uint32_t * )( NVIC_BASE + 0x84 )
 #define NVIC_ICER2									 *( volatile uint32_t * )( NVIC_BASE + 0x88 )
 
+
 //----------------------------------------------
 //Base addresses for AHB Peripherals
 //----------------------------------------------
 
 //RCC
 #define RCC_BASE									(0x40021000UL)
+
 
 //-----------------------------------------------
 //Base addresses for APB1 Peripherals
@@ -86,7 +89,8 @@
 //-*-*-*-*-*-*-*-*-*-*-*-
 //Peripheral register: GPIOx
 //-*-*-*-*-*-*-*-*-*-*-*
-typedef struct {
+typedef struct
+{
 	volatile uint32_t CRL;
 	volatile uint32_t CRH;
 	volatile uint32_t IDR;
@@ -94,12 +98,13 @@ typedef struct {
 	volatile uint32_t BSRR;
 	volatile uint32_t BRR;
 	volatile uint32_t LCKR;
-} GPIO_TypeDef;
+}GPIO_TypeDef;
 
 //-*-*-*-*-*-*-*-*-*-*-*-
 //Peripheral register: RCC
 //-*-*-*-*-*-*-*-*-*-*-*
-typedef struct {
+typedef struct
+{
 	volatile uint32_t CR;
 	volatile uint32_t CFGR;
 	volatile uint32_t CIR;
@@ -112,43 +117,46 @@ typedef struct {
 	volatile uint32_t CSR;
 	volatile uint32_t AHBSTR;
 	volatile uint32_t CFGR2;
-} RCC_TypeDef;
+}RCC_TypeDef;
 
 //-*-*-*-*-*-*-*-*-*-*-*-
 //Peripheral register: AFIO
 //-*-*-*-*-*-*-*-*-*-*-*
-typedef struct {
+typedef struct
+{
 	volatile uint32_t EVCR;
 	volatile uint32_t MAPR;
 	volatile uint32_t EXTICR[4];
-	uint32_t RESERVED0;
+	uint32_t          RESERVED0;
 	volatile uint32_t MAPR2;
-} AFIO_TypeDef;
+}AFIO_TypeDef;
 
 //-*-*-*-*-*-*-*-*-*-*-*-
 //Peripheral register: EXTI
 //-*-*-*-*-*-*-*-*-*-*-*
-typedef struct {
+typedef struct
+{
 	volatile uint32_t IMR;
 	volatile uint32_t EMR;
 	volatile uint32_t RTSR;
 	volatile uint32_t FTSR;
 	volatile uint32_t SWIER;
 	volatile uint32_t PR;
-} EXTI_TypeDef;
+}EXTI_TypeDef;
 
 //-*-*-*-*-*-*-*-*-*-*-*-
 //Peripheral register: USART
 //-*-*-*-*-*-*-*-*-*-*-*
-typedef struct {
-	volatile uint32_t SR;
-	volatile uint32_t DR;
-	volatile uint32_t BRR;
-	volatile uint32_t CR1;
-	volatile uint32_t CR2;
-	volatile uint32_t CR3;
-	volatile uint32_t GTPR;
-} USART_TypeDef;
+typedef struct
+{
+	volatile uint32_t	SR;
+	volatile uint32_t	DR;
+	volatile uint32_t	BRR;
+	volatile uint32_t	CR1;
+	volatile uint32_t	CR2;
+	volatile uint32_t	CR3;
+	volatile uint32_t	GTPR;
+}USART_TypeDef;
 
 
 //========================================================================================================//
@@ -179,6 +187,7 @@ typedef struct {
 //Generic Macros:
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 
+
 //-*-*-*-*-*-*-*-*-*-*-*-
 //IVT Macros:
 //-*-*-*-*-*-*-*-*-*-*-*-
@@ -206,6 +215,7 @@ typedef struct {
 #define USART2_IRQ		38
 #define USART3_IRQ		39
 
+
 //-*-*-*-*-*-*-*-*-*-*-*-
 //Clock Enable Macros:
 //-*-*-*-*-*-*-*-*-*-*-*-
@@ -222,6 +232,7 @@ typedef struct {
 #define RCC_USART1_CLK_ENABLE()					( RCC->APB2ENR |= ( 1 << 14 ) )
 #define RCC_USART2_CLK_ENABLE()					( RCC->APB1ENR |= ( 1 << 17 ) )
 #define RCC_USART3_CLK_ENABLE()					( RCC->APB1ENR |= ( 1 << 18 ) )
+
 
 //-*-*-*-*-*-*-*-*-*-*-*-
 //Clock Disable Macros:
@@ -248,6 +259,7 @@ typedef struct {
 #define NVIC_IRQ38_USART2_ENABLE()				( NVIC_ISER1 |= 1 << (USART2_IRQ - 32) )
 #define NVIC_IRQ39_USART3_ENABLE()				( NVIC_ISER1 |= 1 << (USART3_IRQ - 32) )
 
+
 //-*-*-*-*-*-*-*-*-*-*-*-
 //NVIC IRQ Disable Macros:
 //-*-*-*-*-*-*-*-*-*-*-*-
@@ -264,6 +276,15 @@ typedef struct {
 #define NVIC_IRQ38_USART2_DISABLE()				( NVIC_ICER1 |= 1 << (USART2_IRQ - 32) )
 #define NVIC_IRQ39_USART3_DISABLE()				( NVIC_ICER1 |= 1 << (USART3_IRQ - 32) )
 
+
+
 //========================================================================================================//
+
+
+
+
+
+
+
 
 #endif /* INC_STM32F103X6_H_ */
