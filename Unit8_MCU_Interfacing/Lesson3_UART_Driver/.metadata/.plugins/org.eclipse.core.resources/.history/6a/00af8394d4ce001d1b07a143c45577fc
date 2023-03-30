@@ -33,38 +33,36 @@
 
 struct sUART_IRQ_SRC
 {
-	uint8_t TXE:1;        //TX Buffer Empty interrupt means write new date
-	uint8_t RXNE:1;       //RX Buffer Not Empty interrupt means read it
-	uint8_t TC:1;         //Transmission complete interrupt
-	uint8_t PE:1;         //Parity Error interrupt
-	uint8_t RESERVED:4;
+	uint8_t TXE:1;        //TX Buffer(in master) Empty interrupt means write new date
+	uint8_t RXNE:1;       //RXNE Buffer(in slave) Not Empty interrupt means read it
+	uint8_t ERROR:1;      //Error interrupt
+	uint8_t RESERVED:5;
 };
-
 
 typedef struct
 {
-	uint8_t			USART_Mode;    									//Specifies RX-TX Enable /Disable
-																	//This parameter must be set based on @ref UART_MODE_Define
+	uint8_t			USART_Mode;    			//Specifies RX-TX Enable /Disable
+											//This parameter must be set based on @ref UART_MODE_Define
 
-	uint32_t 		USART_BAUDRATE; 								//Specifies UART communication Baudrate
-																	//This parameter must be set based on @ref UART_BAUDRATE_Define
+	uint32_t 		USART_BAUDRATE; 		//Specifies UART communication Baudrate
+											//This parameter must be set based on @ref UART_BAUDRATE_Define
 
-	uint8_t 		PayLoad_Length;									//Specifies the number of data bits transmitted or received in a frame
-																	//This parameter must be set based on @ref UART_PayLoad_Length_Define
+	uint8_t 		PayLoad_Length;			//Specifies the number of data bits transmitted or received in a frame
+											//This parameter must be set based on @ref UART_PayLoad_Length_Define
 
-	uint8_t			Parity;											//Specifies Parity
-																	//This parameter must be set based on @ref UART_Parity_Define
+	uint8_t			Parity;					//Specifies Parity
+											//This parameter must be set based on @ref UART_Parity_Define
 
-	uint8_t 		StopBits;										//Specifies The Number of Stop Bits
-																	//This parameter must be set based on @ref UART_StopBits_Define
+	uint8_t 		StopBits;				//Specifies The Number of Stop Bits
+											//This parameter must be set based on @ref UART_StopBits_Define
 
-	uint8_t 		HwFlowCTRL;										//Specifies Whether Flow Control is Enabled or not
-																	//This parameter must be set based on @ref UART_HwFlowCTRL_Define
+	uint8_t 		HwFlowCTRL;				//Specifies Whether Flow Control is Enabled or not
+											//This parameter must be set based on @ref UART_HwFlowCTRL_Define
 
-	uint8_t			IRQ_Enable;										//Specifies if RX or Tx Interrupt is Enabled or Disabled
-																	//This parameter must be set based on @ref UART_IRQ_ENABLE_Define
+	uint8_t			IRQ_Enable;				//Specifies if RX or Tx Interrupt is Enabled or Disabled
+											//This parameter must be set based on @ref UART_IRQ_ENABLE_Define
 
-	void(*P_IRQ_CallBack)(struct sUART_IRQ_SRC irq_src);			//Set the C Function() that will be called when the Interrupt Happens
+	void(*P_IRQ_CallBack)(void);			//Set the C Function() that will be called when the Interrupt Happens
 
 }UART_Config_t;
 

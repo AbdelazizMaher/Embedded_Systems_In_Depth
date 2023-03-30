@@ -18,7 +18,7 @@ UART_Config_t Global_UART_Cfg1 ;
 UART_Config_t Global_UART_Cfg2 ;
 UART_Config_t Global_UART_Cfg3 ;
 
-void(* P_UART_IRQ_Callback_g[3])(struct sUART_IRQ_SRC irq_src);
+void(* P_UART_IRQ_Callback_g[3])(void);
 
 
 /*
@@ -31,13 +31,6 @@ void(* P_UART_IRQ_Callback_g[3])(struct sUART_IRQ_SRC irq_src);
 #define UART1_Index				0
 #define UART2_Index				1
 #define UART3_Index				2
-
-#define UART_PE_FLAG            ( 1<<1 )
-#define UART_RXNE_FLAG          ( 1<<5 )
-#define UART_TC_FLAG            ( 1<<6 )
-#define UART_TXE_FLAG           ( 1<<7 )
-
-
 
 
 /*
@@ -320,15 +313,6 @@ void MCAL_UART_GPIO_SetPins(USART_TypeDef * USARTx)
  **================================================================*/
 void MCAL_UART_SendData(USART_TypeDef * USARTx , uint16_t * pTXBuffer , enum Polling_mechism PollingEn)
 {
-    uint8_t index;
-
-	if( USARTx == USART1 )
-		index = UART1_Index;
-	else if ( USARTx == USART2 )
-		index = UART2_Index;
-	else if ( USARTx == USART3 )
-		index = UART3_Index;
-
 	//Wait Until TXE is set in SR
 	if ( PollingEn == ENABLE )
 		while(! ( USARTx->SR & ( 1<<7 ) ) );
@@ -338,7 +322,7 @@ void MCAL_UART_SendData(USART_TypeDef * USARTx , uint16_t * pTXBuffer , enum Pol
 	//	the value written in the MSB (bit 7 or bit 8 depending on the data length) has no effect
 	//	because it is replaced by the parity->
 	//	When receiving with the parity enabled, the value read in the MSB bit is the received parity bit
-	if( Global_UART_Cfg[index]->PayLoad_Length == UART_PayLoad_Length_9bit )
+	if( Global_UART_Cfg->PayLoad_Length == UART_PayLoad_Length_9bit )
 	{
 		USARTx->DR = ( *pTXBuffer & (uint16_t)0x01FF );
 	}
@@ -360,25 +344,14 @@ void MCAL_UART_SendData(USART_TypeDef * USARTx , uint16_t * pTXBuffer , enum Pol
  **================================================================*/
 void MCAL_UART_ReceiveData(USART_TypeDef * USARTx,uint16_t * pRXBuffer , enum Polling_mechism PollingEn)
 {
-
-    uint8_t index;
-
-	if( USARTx == USART1 )
-		index = UART1_Index;
-	else if ( USARTx == USART2 )
-		index = UART2_Index;
-	else if ( USARTx == USART3 )
-		index = UART3_Index;
-
-
 	//Wait Until RXNE is set in SR
 	if ( PollingEn == ENABLE )
 		while(! ( USARTx->SR & ( 1<<5 ) ) );
 
 	//Check the data Word length ( 9BIT - 8BIT) Frame
-	if( Global_UART_Cfg[index]->PayLoad_Length == UART_PayLoad_Length_9bit )
+	if( Global_UART_Cfg->PayLoad_Length == UART_PayLoad_Length_9bit )
 	{
-		if(Global_UART_Cfg[index]->Parity == UART_Parity_NONE)
+		if(Global_UART_Cfg->Parity == UART_Parity_NONE)
 		{
 			//No Parity so all 9bits are data
 			*( (uint16_t*)pRXBuffer ) = USARTx->DR ;
@@ -393,7 +366,7 @@ void MCAL_UART_ReceiveData(USART_TypeDef * USARTx,uint16_t * pRXBuffer , enum Po
 
 	else //8 bit data
 	{
-		if(Global_UART_Cfg[index]->Parity == UART_Parity_NONE)
+		if(Global_UART_Cfg->Parity == UART_Parity_NONE)
 		{
 			//no parity so all 8bits are data
 			*( (uint16_t*)pRXBuffer ) = (USARTx->DR   & (uint8_t)0xFF );
@@ -431,36 +404,15 @@ void MCAL_UART_WAIT_TC (USART_TypeDef * USARTx)
 
 void USART1_IRQHandler(void)
 {
-	struct sUART_IRQ_SRC irq_src;
-
-	irq_src.PE    = ( ( USART1->SR & (UART_PE_FLAG) )   >> 1   );
-	irq_src.RXNE  = ( ( USART1->SR & (UART_RXNE_FLAG) ) >> 5   );
-	irq_src.TC    = ( ( USART1->SR & (UART_TC_FLAG) )   >> 6   );
-	irq_src.TXE   = ( ( USART1->SR & (UART_TXE_FLAG) )  >> 7   );
-
-	P_UART_IRQ_Callback_g[0](irq_src);
+	P_UART_IRQ_Callback_g[0]();
 }
 
 void USART2_IRQHandler(void)
 {
-	struct sUART_IRQ_SRC irq_src;
-
-	irq_src.PE    = ( ( USART2->SR & (UART_PE_FLAG) )   >> 1   );
-	irq_src.RXNE  = ( ( USART2->SR & (UART_RXNE_FLAG) ) >> 5   );
-	irq_src.TC    = ( ( USART2->SR & (UART_TC_FLAG) )   >> 6   );
-	irq_src.TXE   = ( ( USART2->SR & (UART_TXE_FLAG) )  >> 7   );
-
-	P_UART_IRQ_Callback_g[1](irq_src);
+	P_UART_IRQ_Callback_g[1]();
 }
 
 void USART3_IRQHandler(void)
 {
-	struct sUART_IRQ_SRC irq_src;
-
-	irq_src.PE    = ( ( USART3->SR & (UART_PE_FLAG) )   >> 1   );
-	irq_src.RXNE  = ( ( USART3->SR & (UART_RXNE_FLAG) ) >> 5   );
-	irq_src.TC    = ( ( USART3->SR & (UART_TC_FLAG) )   >> 6   );
-	irq_src.TXE   = ( ( USART3->SR & (UART_TXE_FLAG) )  >> 7   );
-
-	P_UART_IRQ_Callback_g[2](irq_src);
+	P_UART_IRQ_Callback_g[2]();
 }

@@ -32,13 +32,6 @@ void(* P_UART_IRQ_Callback_g[3])(struct sUART_IRQ_SRC irq_src);
 #define UART2_Index				1
 #define UART3_Index				2
 
-#define UART_PE_FLAG            ( 1<<1 )
-#define UART_RXNE_FLAG          ( 1<<5 )
-#define UART_TC_FLAG            ( 1<<6 )
-#define UART_TXE_FLAG           ( 1<<7 )
-
-
-
 
 /*
  * ======================================================================
@@ -433,11 +426,6 @@ void USART1_IRQHandler(void)
 {
 	struct sUART_IRQ_SRC irq_src;
 
-	irq_src.PE    = ( ( USART1->SR & (UART_PE_FLAG) )   >> 1   );
-	irq_src.RXNE  = ( ( USART1->SR & (UART_RXNE_FLAG) ) >> 5   );
-	irq_src.TC    = ( ( USART1->SR & (UART_TC_FLAG) )   >> 6   );
-	irq_src.TXE   = ( ( USART1->SR & (UART_TXE_FLAG) )  >> 7   );
-
 	P_UART_IRQ_Callback_g[0](irq_src);
 }
 
@@ -445,22 +433,12 @@ void USART2_IRQHandler(void)
 {
 	struct sUART_IRQ_SRC irq_src;
 
-	irq_src.PE    = ( ( USART2->SR & (UART_PE_FLAG) )   >> 1   );
-	irq_src.RXNE  = ( ( USART2->SR & (UART_RXNE_FLAG) ) >> 5   );
-	irq_src.TC    = ( ( USART2->SR & (UART_TC_FLAG) )   >> 6   );
-	irq_src.TXE   = ( ( USART2->SR & (UART_TXE_FLAG) )  >> 7   );
-
 	P_UART_IRQ_Callback_g[1](irq_src);
 }
 
 void USART3_IRQHandler(void)
 {
 	struct sUART_IRQ_SRC irq_src;
-
-	irq_src.PE    = ( ( USART3->SR & (UART_PE_FLAG) )   >> 1   );
-	irq_src.RXNE  = ( ( USART3->SR & (UART_RXNE_FLAG) ) >> 5   );
-	irq_src.TC    = ( ( USART3->SR & (UART_TC_FLAG) )   >> 6   );
-	irq_src.TXE   = ( ( USART3->SR & (UART_TXE_FLAG) )  >> 7   );
 
 	P_UART_IRQ_Callback_g[2](irq_src);
 }

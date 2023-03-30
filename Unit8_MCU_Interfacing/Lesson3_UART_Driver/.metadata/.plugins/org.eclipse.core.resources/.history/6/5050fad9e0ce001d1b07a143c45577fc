@@ -33,11 +33,10 @@
 
 struct sUART_IRQ_SRC
 {
-	uint8_t TXE:1;        //TX Buffer Empty interrupt means write new date
-	uint8_t RXNE:1;       //RX Buffer Not Empty interrupt means read it
-	uint8_t TC:1;         //Transmission complete interrupt
-	uint8_t PE:1;         //Parity Error interrupt
-	uint8_t RESERVED:4;
+	uint8_t TXE:1;        //TX Buffer(in master) Empty interrupt means write new date
+	uint8_t RXNE:1;       //RXNE Buffer(in slave) Not Empty interrupt means read it
+	uint8_t ERROR:1;      //Error interrupt
+	uint8_t RESERVED:5;
 };
 
 
