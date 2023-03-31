@@ -1,0 +1,93 @@
+/*
+ * Stm32f103c6_SPI_Driver.h
+ *
+ *  Created on: Mar 30, 2023
+ *      Author: Abdelaziz Maher
+ */
+
+#ifndef INC_STM32F103C6_SPI_DRIVER_H_
+#define INC_STM32F103C6_SPI_DRIVER_H_
+
+//-----------------------------------------------
+//Includes
+//-----------------------------------------------
+#include"Stm32f103x6.h"
+#include"Stm32f103c6_GPIO_Driver.h"
+#include"Stm32f103c6_RCC_Driver.h"
+
+
+/*
+ *----------------------------------------------------------
+ * 				  Generic Macros
+ *----------------------------------------------------------
+ */
+
+
+
+
+
+//-----------------------------------------------
+//User type definitions (structures)
+//-----------------------------------------------
+
+struct sSPI_IRQ_SRC
+{
+	uint8_t TXE:1;        //TX Buffer Empty interrupt means write new date
+	uint8_t RXNE:1;       //RX Buffer Not Empty interrupt means read it
+	uint8_t ERROR:1;         //ERROR interrupt
+	uint8_t RESERVED:5;
+};
+
+typedef struct
+{
+    uint16_t 		Device_Mode;         					//Specifies the SPI operating mode @Ref SPI_Device_Mode
+
+    uint16_t 		Communication_Mode; 					//Specifies the SPI bidirectional mode state @Ref SPI_communication_Mode
+
+    uint16_t  	    Frame_Format;        					//Specifies LSB or MSB @Ref SPI_Frame_Format_Mode
+
+    uint16_t  	    Date_Size;          					//Specifies Data Size 8Bit or 16Bit @Ref SPI_Data_Size_Mode
+
+    uint16_t        CLK_Polarity;        					//Specifies CLK_Polarity idle high or idle low @Ref SPI_CLK_Polarity_Mode
+
+    uint16_t        CLK_Phase;          			 		//Specifies CLK_Phase First edge First or Second edge first @Ref SPI_CLK_Phase_Mode
+
+    uint16_t        NSS;                 					//Specifies NSS is signal managed by SSM bit (SW internal bit (SSI Bit)) or HardWare (NSS pin)  @Ref SPI_NSS_Mode
+
+    uint16_t        Baud_Rate_Prescaler; 					//Specifies Baud_Rate_Prescaler value which will be used to configure
+                                      	  	  	  	  	  	//the Transmit and Receiver SCK Clock. Set This Parameter form @Ref SPI_Baud_Rate_Prescaler
+
+
+    uint16_t       IRQ_Enable;                              //@Ref SPI_IRQ_Enable
+
+    void (*P_IRQ_CallBack )(struct S_IRQ_SRC irq_src);      //Set C Function() To call when IRQ happened
+
+}SPI_Config_t;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#endif /* INC_STM32F103C6_SPI_DRIVER_H_ */

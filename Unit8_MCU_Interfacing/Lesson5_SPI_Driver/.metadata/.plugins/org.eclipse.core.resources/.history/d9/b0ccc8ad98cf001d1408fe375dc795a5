@@ -1,0 +1,200 @@
+/*
+ * Stm32f103c6_SPI_Driver.c
+ *
+ *  Created on: Mar 30, 2023
+ *      Author: Abdelaziz Maher
+ */
+
+
+#include"Stm32f103c6_SPI_Driver.h"
+
+/*
+ * ======================================================================
+ *                                          Generic variables
+ *======================================================================
+ */
+SPI_Config_t* Global_SPI_Cfg[2]={NULL,NULL};
+SPI_Config_t Global_SPI_Cfg1 ;
+SPI_Config_t Global_SPI_Cfg2 ;
+
+
+void(* P_SPI_IRQ_Callback_g[2])(struct sSPI_IRQ_SRC irq_src);
+
+
+/*
+ *=======================================================================
+ *						Generic MACROS
+ *=======================================================================
+ *
+*/
+
+#define SPI1_INDEX             	 0
+#define SPI2_INDEX            	 1
+
+#define SPI_TXE_FLAG             ( 1<<1 )
+#define SPI_RXNE_FLAG            ( 1<<0 )
+
+
+
+
+
+/*
+ * ======================================================================
+ *                                          Generic Functions
+ *======================================================================
+ */
+
+
+
+
+
+
+/*
+ *-----------------------------------------------------------
+ * 				APIs Functions Definitions
+ *-----------------------------------------------------------
+ */
+
+/**================================================================
+ * @Fn			- MCAL_SPI_Init
+ * @brief       -Initialize SPI
+ * @param [in]  -SPIx :Where x can be (1...2 depending on device used)
+ * @param [in]  -SPI_Config :All the SPI configuration
+ * @retval      -None
+ * Note         -Support for SPI Full Duplex Master/Slave Only & NSS HW/SW
+ **================================================================*/
+void MCAL_SPI_Init(SPI_TypeDef* SPIx,SPI_Config_t* SPI_Cfg)
+{
+	//Safety for registers
+	uint16_t tempreg_CR1 = 0;
+	uint16_t tempreg_CR2 = 0;
+
+	//Check The number of SPIx
+	if(SPIx == SPI1)
+	{
+		Global_SPI_Cfg1 = *SPI_Cfg;
+		Global_SPI_Cfg[SPI1_INDEX] = &Global_SPI_Cfg1;
+		RCC_SPI1_CLK_ENABLE();
+
+	}
+	else if(SPIx == SPI2)
+	{
+		Global_SPI_Cfg2 = *SPI_Cfg;
+		Global_SPI_Cfg[SPI2_INDEX] = &Global_SPI_Cfg2;
+		RCC_SPI2_CLK_ENABLE();
+	}
+
+	//Set Bit 6 SPE: SPI enable
+	tempreg_CR1 = ( 1<<6 );
+
+	//Master or Salve
+	tempreg_CR1 |= SPI_Cfg->Device_Mode;
+
+	//SPI Communication Mode
+	tempreg_CR1 |= SPI_Cfg->Communication_Mode;
+
+	//SPI Frame_Format
+	tempreg_CR1 |= SPI_Cfg->Frame_Format;
+
+	//SPI Date_Size
+	tempreg_CR1 |= SPI_Cfg->Date_Size;
+
+	//SPI CLK_Polarity
+	tempreg_CR1 |= SPI_Cfg->CLK_Polarity;
+
+	//SPI CLK_Phase
+	tempreg_CR1 |= SPI_Cfg->CLK_Phase;
+
+	//====================SPI NSS======================
+	if( SPI_Cfg->NSS == SPI_NSS_Hard_Master_SS_Out_ENABLE )
+	{
+		tempreg_CR2 |=SPI_Cfg->NSS;
+	}
+	else if( SPI_Cfg->NSS == SPI_NSS_Hard_Master_SS_Out_DISABLE )
+	{
+		tempreg_CR2 &=SPI_Cfg->NSS;
+	}
+	else
+	{
+		tempreg_CR2 |=SPI_Cfg->NSS;
+	}
+
+	//SPI_Baud_Rate_Prescaler
+	tempreg_CR1 |= SPI_Config->BaudRate_Prescaler;
+
+	//SPI_IRQ_Enable
+	if( SPI_Cfg->IRQ_Enable != SPI_IRQ_ENABLE_NONE )
+	{
+		//SPI_IRQ_Enable_define
+		tempreg_CR2 |=SPI_Cfg->IRQ_Enable;
+		if(SPIx == SPI1)
+		{
+			NVIC_IRQ35_SPI1_ENABLE();
+		}
+		else if(SPIx == SPI2)
+		{
+			NVIC_IRQ36_SPI2_ENABLE();
+		}
+
+	}
+
+	SPIx->CR1 = tempreg_CR1;
+	SPIx->CR2 = tempreg_CR2;
+}
+
+
+/**================================================================
+ * @Fn			- MCAL_SPI_DeInit
+ * @brief       -DeInitialize SPI
+ * @param [in]  -SPIx :Where x can be (1...2 depending on device used)
+ * @retval      -None
+ * Note         -Support for SPI Full Duplex Master/Slave Only & NSS HW/SW
+ **================================================================*/
+void MCAL_SPI_DeInit(SPI_TypeDef* SPIx)
+{
+	if(SPIx == SPI1)
+	{
+		NVIC_IRQ35_SPI1_DISABLE();
+		RCC_SPI1_RESET();
+	}
+	else if(SPIx == SPI2)
+	{
+		NVIC_IRQ36_SPI2_DISABLE();
+		RCC_SPI2_RESET();
+	}
+}
+
+/**================================================================
+ * @Fn			- MCAL_SPI_SendData
+ * @brief       -DeInitialize SPI
+ * @param [in]  -SPIx :Where x can be (1...2 depending on device used)
+ * @retval      -None
+ * Note         -Support for SPI Full Duplex Master/Slave Only & NSS HW/SW
+ **================================================================*/
+void MCAL_SPI_SendData(SPI_TypeDef* SPIx,uint16_t* pTxBuffer,enum PollingMechism PollingEn)
+{
+	if (PollingEn == Enable)
+		while(! (SPIx->SR & SPI_TXE_FLAG) );
+	SPIx->DR = *pTxBuffer;
+}
+
+
+void MCAL_SPI_ReceiveData(SPI_TypeDef* SPIx,uint16_t* pRxBuffer,enum PollingMechism PollingEn)
+{
+	if (PollingEn == Enable)
+		while(! (SPIx->SR & SPI_RXNE_FLAG));
+	*pRxBuffer = SPIx->DR;
+}
+
+
+void MCAL_SPI_TXRX(SPI_TypeDef* SPIx,uint16_t* pTxRxBuffer,enum PollingMechism PollingEn)
+{
+	if (PollingEn == Enable)
+		while(! (SPIx->SR & SPI_TXE_FLAG) );
+	SPIx->DR = *pTxRxBuffer;
+
+	if (PollingEn == Enable)
+		while(! (SPIx->SR & SPI_RXNE_FLAG) );
+	*pTxRxBuffer = SPIx->DR;
+
+}
