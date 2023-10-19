@@ -47,17 +47,20 @@ void GPIO_Int_Init()
 ISR(INT0_vect)
 {
 	PORTD |= (1<<PD5);
-	_delay_ms(1000);	
+	_delay_ms(1000);
+	PORTD &= ~(1<<PD5);	
 }
 
 ISR(INT1_vect)
 {
 	PORTD |= (1<<PD6);
 	_delay_ms(1000);
+	PORTD &= ~(1<<PD6);
 }
 
 ISR(INT2_vect)
 {
     PORTD |= (1<<PD7);
 	_delay_ms(1000);
+	PORTD &= ~(1<<PD7);
 }
