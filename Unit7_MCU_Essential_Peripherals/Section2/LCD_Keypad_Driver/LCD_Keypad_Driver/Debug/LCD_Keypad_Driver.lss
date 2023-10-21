@@ -1,0 +1,794 @@
+
+LCD_Keypad_Driver.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         000003ee  00000000  00000000  00000094  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000028  00800060  000003ee  00000482  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .bss          00000002  00800088  00800088  000004aa  2**0
+                  ALLOC
+  3 .comment      00000030  00000000  00000000  000004aa  2**0
+                  CONTENTS, READONLY
+  4 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  000004dc  2**2
+                  CONTENTS, READONLY
+  5 .debug_aranges 000000b8  00000000  00000000  00000518  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_info   00000cdd  00000000  00000000  000005d0  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_abbrev 00000811  00000000  00000000  000012ad  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_line   000007e2  00000000  00000000  00001abe  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_frame  000001ac  00000000  00000000  000022a0  2**2
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_str    000004eb  00000000  00000000  0000244c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_loc    00000518  00000000  00000000  00002937  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 12 .debug_ranges 00000088  00000000  00000000  00002e4f  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	0c 94 2a 00 	jmp	0x54	; 0x54 <__ctors_end>
+   4:	0c 94 47 00 	jmp	0x8e	; 0x8e <__bad_interrupt>
+   8:	0c 94 47 00 	jmp	0x8e	; 0x8e <__bad_interrupt>
+   c:	0c 94 47 00 	jmp	0x8e	; 0x8e <__bad_interrupt>
+  10:	0c 94 47 00 	jmp	0x8e	; 0x8e <__bad_interrupt>
+  14:	0c 94 47 00 	jmp	0x8e	; 0x8e <__bad_interrupt>
+  18:	0c 94 47 00 	jmp	0x8e	; 0x8e <__bad_interrupt>
+  1c:	0c 94 47 00 	jmp	0x8e	; 0x8e <__bad_interrupt>
+  20:	0c 94 47 00 	jmp	0x8e	; 0x8e <__bad_interrupt>
+  24:	0c 94 47 00 	jmp	0x8e	; 0x8e <__bad_interrupt>
+  28:	0c 94 47 00 	jmp	0x8e	; 0x8e <__bad_interrupt>
+  2c:	0c 94 47 00 	jmp	0x8e	; 0x8e <__bad_interrupt>
+  30:	0c 94 47 00 	jmp	0x8e	; 0x8e <__bad_interrupt>
+  34:	0c 94 47 00 	jmp	0x8e	; 0x8e <__bad_interrupt>
+  38:	0c 94 47 00 	jmp	0x8e	; 0x8e <__bad_interrupt>
+  3c:	0c 94 47 00 	jmp	0x8e	; 0x8e <__bad_interrupt>
+  40:	0c 94 47 00 	jmp	0x8e	; 0x8e <__bad_interrupt>
+  44:	0c 94 47 00 	jmp	0x8e	; 0x8e <__bad_interrupt>
+  48:	0c 94 47 00 	jmp	0x8e	; 0x8e <__bad_interrupt>
+  4c:	0c 94 47 00 	jmp	0x8e	; 0x8e <__bad_interrupt>
+  50:	0c 94 47 00 	jmp	0x8e	; 0x8e <__bad_interrupt>
+
+00000054 <__ctors_end>:
+  54:	11 24       	eor	r1, r1
+  56:	1f be       	out	0x3f, r1	; 63
+  58:	cf e5       	ldi	r28, 0x5F	; 95
+  5a:	d8 e0       	ldi	r29, 0x08	; 8
+  5c:	de bf       	out	0x3e, r29	; 62
+  5e:	cd bf       	out	0x3d, r28	; 61
+
+00000060 <__do_copy_data>:
+  60:	10 e0       	ldi	r17, 0x00	; 0
+  62:	a0 e6       	ldi	r26, 0x60	; 96
+  64:	b0 e0       	ldi	r27, 0x00	; 0
+  66:	ee ee       	ldi	r30, 0xEE	; 238
+  68:	f3 e0       	ldi	r31, 0x03	; 3
+  6a:	02 c0       	rjmp	.+4      	; 0x70 <__do_copy_data+0x10>
+  6c:	05 90       	lpm	r0, Z+
+  6e:	0d 92       	st	X+, r0
+  70:	a8 38       	cpi	r26, 0x88	; 136
+  72:	b1 07       	cpc	r27, r17
+  74:	d9 f7       	brne	.-10     	; 0x6c <__do_copy_data+0xc>
+
+00000076 <__do_clear_bss>:
+  76:	20 e0       	ldi	r18, 0x00	; 0
+  78:	a8 e8       	ldi	r26, 0x88	; 136
+  7a:	b0 e0       	ldi	r27, 0x00	; 0
+  7c:	01 c0       	rjmp	.+2      	; 0x80 <.do_clear_bss_start>
+
+0000007e <.do_clear_bss_loop>:
+  7e:	1d 92       	st	X+, r1
+
+00000080 <.do_clear_bss_start>:
+  80:	aa 38       	cpi	r26, 0x8A	; 138
+  82:	b2 07       	cpc	r27, r18
+  84:	e1 f7       	brne	.-8      	; 0x7e <.do_clear_bss_loop>
+  86:	0e 94 ca 01 	call	0x394	; 0x394 <main>
+  8a:	0c 94 f5 01 	jmp	0x3ea	; 0x3ea <_exit>
+
+0000008e <__bad_interrupt>:
+  8e:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
+
+00000092 <Keypad_Init>:
+int Keypad_row[] = {R0 , R1 , R2 , R3};
+int Keypad_col[] = {C0 , C1 , C2 , C3};
+	
+void Keypad_Init(void)
+{
+	Keypad__PORT_DataDir |= ( (1<<C0) | (1<<C1) | (1<<C2) | (1<<C3) ) ;			// columns as output
+  92:	81 b3       	in	r24, 0x11	; 17
+  94:	80 6f       	ori	r24, 0xF0	; 240
+  96:	81 bb       	out	0x11, r24	; 17
+	Keypad__PORT_DataDir &= ~( (1<<R0) | (1<<R1) | (1<<R2) | (1<<R3) ) ;		// rows as input
+  98:	81 b3       	in	r24, 0x11	; 17
+  9a:	80 7f       	andi	r24, 0xF0	; 240
+  9c:	81 bb       	out	0x11, r24	; 17
+	
+	Keypad_PORT = 0xFF;
+  9e:	8f ef       	ldi	r24, 0xFF	; 255
+  a0:	82 bb       	out	0x12, r24	; 18
+  a2:	08 95       	ret
+
+000000a4 <Keypad_GetKey>:
+}
+
+char Keypad_GetKey(void)
+{
+  a4:	0f 93       	push	r16
+  a6:	1f 93       	push	r17
+  a8:	cf 93       	push	r28
+  aa:	df 93       	push	r29
+	int row , column;
+	
+	for( column = 0 ; column < 4 ; column++ )
+  ac:	40 e0       	ldi	r20, 0x00	; 0
+  ae:	50 e0       	ldi	r21, 0x00	; 0
+  b0:	9d c0       	rjmp	.+314    	; 0x1ec <Keypad_GetKey+0x148>
+	{
+		Keypad_PORT |= ( (1<<Keypad_col[0]) | (1<<Keypad_col[1]) | (1<<Keypad_col[2]) | (1<<Keypad_col[3]) ) ;  //Columns output are high
+  b2:	32 b3       	in	r19, 0x12	; 18
+  b4:	e0 e6       	ldi	r30, 0x60	; 96
+  b6:	f0 e0       	ldi	r31, 0x00	; 0
+  b8:	81 e0       	ldi	r24, 0x01	; 1
+  ba:	90 e0       	ldi	r25, 0x00	; 0
+  bc:	8c 01       	movw	r16, r24
+  be:	00 80       	ld	r0, Z
+  c0:	02 c0       	rjmp	.+4      	; 0xc6 <Keypad_GetKey+0x22>
+  c2:	00 0f       	add	r16, r16
+  c4:	11 1f       	adc	r17, r17
+  c6:	0a 94       	dec	r0
+  c8:	e2 f7       	brpl	.-8      	; 0xc2 <Keypad_GetKey+0x1e>
+  ca:	ec 01       	movw	r28, r24
+  cc:	02 80       	ldd	r0, Z+2	; 0x02
+  ce:	02 c0       	rjmp	.+4      	; 0xd4 <Keypad_GetKey+0x30>
+  d0:	cc 0f       	add	r28, r28
+  d2:	dd 1f       	adc	r29, r29
+  d4:	0a 94       	dec	r0
+  d6:	e2 f7       	brpl	.-8      	; 0xd0 <Keypad_GetKey+0x2c>
+  d8:	dc 01       	movw	r26, r24
+  da:	04 80       	ldd	r0, Z+4	; 0x04
+  dc:	02 c0       	rjmp	.+4      	; 0xe2 <Keypad_GetKey+0x3e>
+  de:	aa 0f       	add	r26, r26
+  e0:	bb 1f       	adc	r27, r27
+  e2:	0a 94       	dec	r0
+  e4:	e2 f7       	brpl	.-8      	; 0xde <Keypad_GetKey+0x3a>
+  e6:	bc 01       	movw	r22, r24
+  e8:	06 80       	ldd	r0, Z+6	; 0x06
+  ea:	02 c0       	rjmp	.+4      	; 0xf0 <Keypad_GetKey+0x4c>
+  ec:	66 0f       	add	r22, r22
+  ee:	77 1f       	adc	r23, r23
+  f0:	0a 94       	dec	r0
+  f2:	e2 f7       	brpl	.-8      	; 0xec <Keypad_GetKey+0x48>
+  f4:	2c 2f       	mov	r18, r28
+  f6:	20 2b       	or	r18, r16
+  f8:	2a 2b       	or	r18, r26
+  fa:	26 2b       	or	r18, r22
+  fc:	23 2b       	or	r18, r19
+  fe:	22 bb       	out	0x12, r18	; 18
+		Keypad_PORT &= ~(1<<Keypad_col[column]);                        
+ 100:	22 b3       	in	r18, 0x12	; 18
+ 102:	fa 01       	movw	r30, r20
+ 104:	ee 0f       	add	r30, r30
+ 106:	ff 1f       	adc	r31, r31
+ 108:	e0 5a       	subi	r30, 0xA0	; 160
+ 10a:	ff 4f       	sbci	r31, 0xFF	; 255
+ 10c:	00 80       	ld	r0, Z
+ 10e:	02 c0       	rjmp	.+4      	; 0x114 <Keypad_GetKey+0x70>
+ 110:	88 0f       	add	r24, r24
+ 112:	99 1f       	adc	r25, r25
+ 114:	0a 94       	dec	r0
+ 116:	e2 f7       	brpl	.-8      	; 0x110 <Keypad_GetKey+0x6c>
+ 118:	80 95       	com	r24
+ 11a:	82 23       	and	r24, r18
+ 11c:	82 bb       	out	0x12, r24	; 18
+		for( row = 0 ; row < 4 ; row++ )
+ 11e:	60 e0       	ldi	r22, 0x00	; 0
+ 120:	70 e0       	ldi	r23, 0x00	; 0
+ 122:	5e c0       	rjmp	.+188    	; 0x1e0 <Keypad_GetKey+0x13c>
+		{
+			if( !(Keypad_PIN & (1<<Keypad_row[row])) )
+ 124:	80 b3       	in	r24, 0x10	; 16
+ 126:	fb 01       	movw	r30, r22
+ 128:	ee 0f       	add	r30, r30
+ 12a:	ff 1f       	adc	r31, r31
+ 12c:	e8 59       	subi	r30, 0x98	; 152
+ 12e:	ff 4f       	sbci	r31, 0xFF	; 255
+ 130:	20 81       	ld	r18, Z
+ 132:	90 e0       	ldi	r25, 0x00	; 0
+ 134:	02 2e       	mov	r0, r18
+ 136:	02 c0       	rjmp	.+4      	; 0x13c <Keypad_GetKey+0x98>
+ 138:	95 95       	asr	r25
+ 13a:	87 95       	ror	r24
+ 13c:	0a 94       	dec	r0
+ 13e:	e2 f7       	brpl	.-8      	; 0x138 <Keypad_GetKey+0x94>
+ 140:	80 fd       	sbrc	r24, 0
+ 142:	4c c0       	rjmp	.+152    	; 0x1dc <Keypad_GetKey+0x138>
+			{
+				while( !(Keypad_PIN & (1<<Keypad_row[row])) );  // wait till it goes high again
+ 144:	80 b3       	in	r24, 0x10	; 16
+ 146:	90 e0       	ldi	r25, 0x00	; 0
+ 148:	02 2e       	mov	r0, r18
+ 14a:	02 c0       	rjmp	.+4      	; 0x150 <Keypad_GetKey+0xac>
+ 14c:	95 95       	asr	r25
+ 14e:	87 95       	ror	r24
+ 150:	0a 94       	dec	r0
+ 152:	e2 f7       	brpl	.-8      	; 0x14c <Keypad_GetKey+0xa8>
+ 154:	80 ff       	sbrs	r24, 0
+ 156:	f6 cf       	rjmp	.-20     	; 0x144 <Keypad_GetKey+0xa0>
+				
+				switch(column)
+ 158:	41 30       	cpi	r20, 0x01	; 1
+ 15a:	51 05       	cpc	r21, r1
+ 15c:	c9 f0       	breq	.+50     	; 0x190 <Keypad_GetKey+0xec>
+ 15e:	24 f4       	brge	.+8      	; 0x168 <Keypad_GetKey+0xc4>
+ 160:	41 15       	cp	r20, r1
+ 162:	51 05       	cpc	r21, r1
+ 164:	41 f0       	breq	.+16     	; 0x176 <Keypad_GetKey+0xd2>
+ 166:	3a c0       	rjmp	.+116    	; 0x1dc <Keypad_GetKey+0x138>
+ 168:	42 30       	cpi	r20, 0x02	; 2
+ 16a:	51 05       	cpc	r21, r1
+ 16c:	f1 f0       	breq	.+60     	; 0x1aa <Keypad_GetKey+0x106>
+ 16e:	43 30       	cpi	r20, 0x03	; 3
+ 170:	51 05       	cpc	r21, r1
+ 172:	41 f1       	breq	.+80     	; 0x1c4 <Keypad_GetKey+0x120>
+ 174:	33 c0       	rjmp	.+102    	; 0x1dc <Keypad_GetKey+0x138>
+				{
+				case 0:
+					if( row == 0 )return '7';
+ 176:	61 15       	cp	r22, r1
+ 178:	71 05       	cpc	r23, r1
+ 17a:	f1 f1       	breq	.+124    	; 0x1f8 <Keypad_GetKey+0x154>
+					else if( row == 1 )return '4';
+ 17c:	61 30       	cpi	r22, 0x01	; 1
+ 17e:	71 05       	cpc	r23, r1
+ 180:	e9 f1       	breq	.+122    	; 0x1fc <Keypad_GetKey+0x158>
+					else if( row == 2 )return '1';
+ 182:	62 30       	cpi	r22, 0x02	; 2
+ 184:	71 05       	cpc	r23, r1
+ 186:	e1 f1       	breq	.+120    	; 0x200 <Keypad_GetKey+0x15c>
+					else if( row == 3 )return '!';  // clear the screen button
+ 188:	63 30       	cpi	r22, 0x03	; 3
+ 18a:	71 05       	cpc	r23, r1
+ 18c:	39 f5       	brne	.+78     	; 0x1dc <Keypad_GetKey+0x138>
+ 18e:	3a c0       	rjmp	.+116    	; 0x204 <Keypad_GetKey+0x160>
+					break;
+				
+				case 1:
+					if( row == 0 )return '8';
+ 190:	61 15       	cp	r22, r1
+ 192:	71 05       	cpc	r23, r1
+ 194:	c9 f1       	breq	.+114    	; 0x208 <Keypad_GetKey+0x164>
+					else if( row == 1 )return '5';
+ 196:	61 30       	cpi	r22, 0x01	; 1
+ 198:	71 05       	cpc	r23, r1
+ 19a:	c1 f1       	breq	.+112    	; 0x20c <Keypad_GetKey+0x168>
+					else if( row == 2 )return '2';
+ 19c:	62 30       	cpi	r22, 0x02	; 2
+ 19e:	71 05       	cpc	r23, r1
+ 1a0:	b9 f1       	breq	.+110    	; 0x210 <Keypad_GetKey+0x16c>
+					else if( row == 3 )return '0';
+ 1a2:	63 30       	cpi	r22, 0x03	; 3
+ 1a4:	71 05       	cpc	r23, r1
+ 1a6:	d1 f4       	brne	.+52     	; 0x1dc <Keypad_GetKey+0x138>
+ 1a8:	35 c0       	rjmp	.+106    	; 0x214 <Keypad_GetKey+0x170>
+					break;	
+				
+				case 2:
+					if( row == 0 )return '9';
+ 1aa:	61 15       	cp	r22, r1
+ 1ac:	71 05       	cpc	r23, r1
+ 1ae:	a1 f1       	breq	.+104    	; 0x218 <Keypad_GetKey+0x174>
+					else if( row == 1 )return '6';
+ 1b0:	61 30       	cpi	r22, 0x01	; 1
+ 1b2:	71 05       	cpc	r23, r1
+ 1b4:	99 f1       	breq	.+102    	; 0x21c <Keypad_GetKey+0x178>
+					else if( row == 2 )return '3';
+ 1b6:	62 30       	cpi	r22, 0x02	; 2
+ 1b8:	71 05       	cpc	r23, r1
+ 1ba:	91 f1       	breq	.+100    	; 0x220 <Keypad_GetKey+0x17c>
+					else if( row == 3 )return '=';
+ 1bc:	63 30       	cpi	r22, 0x03	; 3
+ 1be:	71 05       	cpc	r23, r1
+ 1c0:	69 f4       	brne	.+26     	; 0x1dc <Keypad_GetKey+0x138>
+ 1c2:	30 c0       	rjmp	.+96     	; 0x224 <Keypad_GetKey+0x180>
+					break;
+				
+				case 3:
+					if( row == 0 )return '/';
+ 1c4:	61 15       	cp	r22, r1
+ 1c6:	71 05       	cpc	r23, r1
+ 1c8:	79 f1       	breq	.+94     	; 0x228 <Keypad_GetKey+0x184>
+					else if( row == 1 )return '*';
+ 1ca:	61 30       	cpi	r22, 0x01	; 1
+ 1cc:	71 05       	cpc	r23, r1
+ 1ce:	71 f1       	breq	.+92     	; 0x22c <Keypad_GetKey+0x188>
+					else if( row == 2 )return '-';
+ 1d0:	62 30       	cpi	r22, 0x02	; 2
+ 1d2:	71 05       	cpc	r23, r1
+ 1d4:	69 f1       	breq	.+90     	; 0x230 <Keypad_GetKey+0x18c>
+					else if( row == 3 )return '+';
+ 1d6:	63 30       	cpi	r22, 0x03	; 3
+ 1d8:	71 05       	cpc	r23, r1
+ 1da:	61 f1       	breq	.+88     	; 0x234 <Keypad_GetKey+0x190>
+	
+	for( column = 0 ; column < 4 ; column++ )
+	{
+		Keypad_PORT |= ( (1<<Keypad_col[0]) | (1<<Keypad_col[1]) | (1<<Keypad_col[2]) | (1<<Keypad_col[3]) ) ;  //Columns output are high
+		Keypad_PORT &= ~(1<<Keypad_col[column]);                        
+		for( row = 0 ; row < 4 ; row++ )
+ 1dc:	6f 5f       	subi	r22, 0xFF	; 255
+ 1de:	7f 4f       	sbci	r23, 0xFF	; 255
+ 1e0:	64 30       	cpi	r22, 0x04	; 4
+ 1e2:	71 05       	cpc	r23, r1
+ 1e4:	0c f4       	brge	.+2      	; 0x1e8 <Keypad_GetKey+0x144>
+ 1e6:	9e cf       	rjmp	.-196    	; 0x124 <Keypad_GetKey+0x80>
+
+char Keypad_GetKey(void)
+{
+	int row , column;
+	
+	for( column = 0 ; column < 4 ; column++ )
+ 1e8:	4f 5f       	subi	r20, 0xFF	; 255
+ 1ea:	5f 4f       	sbci	r21, 0xFF	; 255
+ 1ec:	44 30       	cpi	r20, 0x04	; 4
+ 1ee:	51 05       	cpc	r21, r1
+ 1f0:	0c f4       	brge	.+2      	; 0x1f4 <Keypad_GetKey+0x150>
+ 1f2:	5f cf       	rjmp	.-322    	; 0xb2 <Keypad_GetKey+0xe>
+					break;											
+				}		
+			}		
+		}			
+	}
+	return 'N'; // Return 'N' if no key is pressed	
+ 1f4:	8e e4       	ldi	r24, 0x4E	; 78
+ 1f6:	1f c0       	rjmp	.+62     	; 0x236 <Keypad_GetKey+0x192>
+				while( !(Keypad_PIN & (1<<Keypad_row[row])) );  // wait till it goes high again
+				
+				switch(column)
+				{
+				case 0:
+					if( row == 0 )return '7';
+ 1f8:	87 e3       	ldi	r24, 0x37	; 55
+ 1fa:	1d c0       	rjmp	.+58     	; 0x236 <Keypad_GetKey+0x192>
+					else if( row == 1 )return '4';
+ 1fc:	84 e3       	ldi	r24, 0x34	; 52
+ 1fe:	1b c0       	rjmp	.+54     	; 0x236 <Keypad_GetKey+0x192>
+					else if( row == 2 )return '1';
+ 200:	81 e3       	ldi	r24, 0x31	; 49
+ 202:	19 c0       	rjmp	.+50     	; 0x236 <Keypad_GetKey+0x192>
+					else if( row == 3 )return '!';  // clear the screen button
+ 204:	81 e2       	ldi	r24, 0x21	; 33
+ 206:	17 c0       	rjmp	.+46     	; 0x236 <Keypad_GetKey+0x192>
+					break;
+				
+				case 1:
+					if( row == 0 )return '8';
+ 208:	88 e3       	ldi	r24, 0x38	; 56
+ 20a:	15 c0       	rjmp	.+42     	; 0x236 <Keypad_GetKey+0x192>
+					else if( row == 1 )return '5';
+ 20c:	85 e3       	ldi	r24, 0x35	; 53
+ 20e:	13 c0       	rjmp	.+38     	; 0x236 <Keypad_GetKey+0x192>
+					else if( row == 2 )return '2';
+ 210:	82 e3       	ldi	r24, 0x32	; 50
+ 212:	11 c0       	rjmp	.+34     	; 0x236 <Keypad_GetKey+0x192>
+					else if( row == 3 )return '0';
+ 214:	80 e3       	ldi	r24, 0x30	; 48
+ 216:	0f c0       	rjmp	.+30     	; 0x236 <Keypad_GetKey+0x192>
+					break;	
+				
+				case 2:
+					if( row == 0 )return '9';
+ 218:	89 e3       	ldi	r24, 0x39	; 57
+ 21a:	0d c0       	rjmp	.+26     	; 0x236 <Keypad_GetKey+0x192>
+					else if( row == 1 )return '6';
+ 21c:	86 e3       	ldi	r24, 0x36	; 54
+ 21e:	0b c0       	rjmp	.+22     	; 0x236 <Keypad_GetKey+0x192>
+					else if( row == 2 )return '3';
+ 220:	83 e3       	ldi	r24, 0x33	; 51
+ 222:	09 c0       	rjmp	.+18     	; 0x236 <Keypad_GetKey+0x192>
+					else if( row == 3 )return '=';
+ 224:	8d e3       	ldi	r24, 0x3D	; 61
+ 226:	07 c0       	rjmp	.+14     	; 0x236 <Keypad_GetKey+0x192>
+					break;
+				
+				case 3:
+					if( row == 0 )return '/';
+ 228:	8f e2       	ldi	r24, 0x2F	; 47
+ 22a:	05 c0       	rjmp	.+10     	; 0x236 <Keypad_GetKey+0x192>
+					else if( row == 1 )return '*';
+ 22c:	8a e2       	ldi	r24, 0x2A	; 42
+ 22e:	03 c0       	rjmp	.+6      	; 0x236 <Keypad_GetKey+0x192>
+					else if( row == 2 )return '-';
+ 230:	8d e2       	ldi	r24, 0x2D	; 45
+ 232:	01 c0       	rjmp	.+2      	; 0x236 <Keypad_GetKey+0x192>
+					else if( row == 3 )return '+';
+ 234:	8b e2       	ldi	r24, 0x2B	; 43
+				}		
+			}		
+		}			
+	}
+	return 'N'; // Return 'N' if no key is pressed	
+ 236:	df 91       	pop	r29
+ 238:	cf 91       	pop	r28
+ 23a:	1f 91       	pop	r17
+ 23c:	0f 91       	pop	r16
+ 23e:	08 95       	ret
+
+00000240 <LCD_Kick>:
+	LCD_CTRL &= ~(1<<RW_SWITCH);     // Write Mode	
+}
+
+void LCD_Kick(void)
+{
+	LCD_CTRL |= (1 << EN_SWITCH);
+ 240:	88 b3       	in	r24, 0x18	; 24
+ 242:	88 60       	ori	r24, 0x08	; 8
+ 244:	88 bb       	out	0x18, r24	; 24
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+ 246:	8b e4       	ldi	r24, 0x4B	; 75
+ 248:	9d e1       	ldi	r25, 0x1D	; 29
+ 24a:	01 97       	sbiw	r24, 0x01	; 1
+ 24c:	f1 f7       	brne	.-4      	; 0x24a <LCD_Kick+0xa>
+ 24e:	00 c0       	rjmp	.+0      	; 0x250 <LCD_Kick+0x10>
+ 250:	00 00       	nop
+	_delay_ms(30);
+	LCD_CTRL &= ~(1 << EN_SWITCH);	
+ 252:	88 b3       	in	r24, 0x18	; 24
+ 254:	87 7f       	andi	r24, 0xF7	; 247
+ 256:	88 bb       	out	0x18, r24	; 24
+ 258:	08 95       	ret
+
+0000025a <LCD_isbusy>:
+		LCD_WRITE_CHAR(*string++);
+}
+
+void LCD_isbusy(void)
+{
+	LCD_PORT_DataDir &= ~(0xFF);             // Make 7th bit of LCD data port as input
+ 25a:	8a b3       	in	r24, 0x1a	; 26
+ 25c:	1a ba       	out	0x1a, r1	; 26
+	LCD_CTRL |=  (1<<RW_SWITCH);     // Read Mode
+ 25e:	88 b3       	in	r24, 0x18	; 24
+ 260:	84 60       	ori	r24, 0x04	; 4
+ 262:	88 bb       	out	0x18, r24	; 24
+	LCD_CTRL &= ~(1<<RS_SWITCH);     // Select command register
+ 264:	88 b3       	in	r24, 0x18	; 24
+ 266:	8d 7f       	andi	r24, 0xFD	; 253
+ 268:	88 bb       	out	0x18, r24	; 24
+	
+//	while( (PINB>>7) & 1 )                   //read 7th bit again and again till it becomes 0
+	{
+		LCD_Kick();
+ 26a:	0e 94 20 01 	call	0x240	; 0x240 <LCD_Kick>
+	}                              
+	
+	LCD_PORT_DataDir |= (0xFF);              // Make 7th bit of LCD data port as output
+ 26e:	8a b3       	in	r24, 0x1a	; 26
+ 270:	8f ef       	ldi	r24, 0xFF	; 255
+ 272:	8a bb       	out	0x1a, r24	; 26
+	LCD_CTRL &= ~(1<<RW_SWITCH);     // Write Mode	
+ 274:	88 b3       	in	r24, 0x18	; 24
+ 276:	8b 7f       	andi	r24, 0xFB	; 251
+ 278:	88 bb       	out	0x18, r24	; 24
+ 27a:	08 95       	ret
+
+0000027c <LCD_WRITE_COMMAND>:
+	LCD_WRITE_COMMAND(LCD_BEGIN_AT_FIRST_ROW);
+	LCD_WRITE_COMMAND(LCD_DISP_ON_CURSOR_BLINK);
+}
+
+void LCD_WRITE_COMMAND(unsigned char command)
+{
+ 27c:	cf 93       	push	r28
+ 27e:	c8 2f       	mov	r28, r24
+	LCD_isbusy();
+ 280:	0e 94 2d 01 	call	0x25a	; 0x25a <LCD_isbusy>
+	
+	#ifdef EIGHT_BIT_MODE
+	       LCD_PORT = command;
+ 284:	cb bb       	out	0x1b, r28	; 27
+	       LCD_CTRL &= ~((1 << RS_SWITCH) | (1<<RW_SWITCH)); 
+ 286:	88 b3       	in	r24, 0x18	; 24
+ 288:	89 7f       	andi	r24, 0xF9	; 249
+ 28a:	88 bb       	out	0x18, r24	; 24
+		   LCD_Kick();		
+ 28c:	0e 94 20 01 	call	0x240	; 0x240 <LCD_Kick>
+	       LCD_Kick();
+	       LCD_PORT = (LCD_PORT & 0x0F) | (command & 0xF0);   // Lower Nibble
+	       LCD_CTRL &= ~((1 << RS_SWITCH) | (1<<RW_SWITCH));
+	       LCD_Kick();		   	       
+	#endif	
+}
+ 290:	cf 91       	pop	r28
+ 292:	08 95       	ret
+
+00000294 <LCD_Clear_Screen>:
+	LCD_CTRL &= ~(1 << EN_SWITCH);	
+}
+
+void LCD_Clear_Screen(void)
+{
+	Position = 0;
+ 294:	10 92 89 00 	sts	0x0089, r1	; 0x800089 <__data_end+0x1>
+ 298:	10 92 88 00 	sts	0x0088, r1	; 0x800088 <__data_end>
+	LCD_WRITE_COMMAND(LCD_CLEAR_SCREEN);
+ 29c:	81 e0       	ldi	r24, 0x01	; 1
+ 29e:	0e 94 3e 01 	call	0x27c	; 0x27c <LCD_WRITE_COMMAND>
+ 2a2:	08 95       	ret
+
+000002a4 <LCD_INIT>:
+ 2a4:	83 ed       	ldi	r24, 0xD3	; 211
+ 2a6:	90 e3       	ldi	r25, 0x30	; 48
+ 2a8:	01 97       	sbiw	r24, 0x01	; 1
+ 2aa:	f1 f7       	brne	.-4      	; 0x2a8 <LCD_INIT+0x4>
+ 2ac:	00 c0       	rjmp	.+0      	; 0x2ae <LCD_INIT+0xa>
+ 2ae:	00 00       	nop
+
+void LCD_INIT(void)
+{
+	_delay_ms(50);         // LCD power ON delay
+	
+	LCD_CTRL_DataDir |= ( (1<<RS_SWITCH) | (1<<RW_SWITCH) | (1<<EN_SWITCH) );  
+ 2b0:	87 b3       	in	r24, 0x17	; 23
+ 2b2:	8e 60       	ori	r24, 0x0E	; 14
+ 2b4:	87 bb       	out	0x17, r24	; 23
+	LCD_CTRL &= ~ ( (1<<RS_SWITCH) | (1<<RW_SWITCH) | (1<<EN_SWITCH) );
+ 2b6:	88 b3       	in	r24, 0x18	; 24
+ 2b8:	81 7f       	andi	r24, 0xF1	; 241
+ 2ba:	88 bb       	out	0x18, r24	; 24
+	
+	#ifdef EIGHT_BIT_MODE	
+	        LCD_PORT_DataDir = 0xFF;
+ 2bc:	8f ef       	ldi	r24, 0xFF	; 255
+ 2be:	8a bb       	out	0x1a, r24	; 26
+	        LCD_WRITE_COMMAND(LCD_FUNCTION_8BIT_2LINES);	
+ 2c0:	88 e3       	ldi	r24, 0x38	; 56
+ 2c2:	0e 94 3e 01 	call	0x27c	; 0x27c <LCD_WRITE_COMMAND>
+		   LCD_PORT_DataDir |= 0xF0;
+	       LCD_WRITE_COMMAND(0x02);
+		   LCD_WRITE_COMMAND(LCD_FUNCTION_4BIT_2LINES);
+	#endif
+	
+	LCD_Clear_Screen();
+ 2c6:	0e 94 4a 01 	call	0x294	; 0x294 <LCD_Clear_Screen>
+	LCD_WRITE_COMMAND(LCD_ENTRY_MODE);
+ 2ca:	86 e0       	ldi	r24, 0x06	; 6
+ 2cc:	0e 94 3e 01 	call	0x27c	; 0x27c <LCD_WRITE_COMMAND>
+	LCD_WRITE_COMMAND(LCD_BEGIN_AT_FIRST_ROW);
+ 2d0:	80 e8       	ldi	r24, 0x80	; 128
+ 2d2:	0e 94 3e 01 	call	0x27c	; 0x27c <LCD_WRITE_COMMAND>
+	LCD_WRITE_COMMAND(LCD_DISP_ON_CURSOR_BLINK);
+ 2d6:	8f e0       	ldi	r24, 0x0F	; 15
+ 2d8:	0e 94 3e 01 	call	0x27c	; 0x27c <LCD_WRITE_COMMAND>
+ 2dc:	08 95       	ret
+
+000002de <LCD_GOTO_XY>:
+	LCD_WRITE_COMMAND(LCD_CLEAR_SCREEN);
+}
+
+void LCD_GOTO_XY(unsigned char Newline, unsigned char NewPosition)
+{
+	if ( Newline == 0 )
+ 2de:	81 11       	cpse	r24, r1
+ 2e0:	0d c0       	rjmp	.+26     	; 0x2fc <LCD_GOTO_XY+0x1e>
+	{
+		Position = NewPosition;
+ 2e2:	86 2f       	mov	r24, r22
+ 2e4:	90 e0       	ldi	r25, 0x00	; 0
+ 2e6:	90 93 89 00 	sts	0x0089, r25	; 0x800089 <__data_end+0x1>
+ 2ea:	80 93 88 00 	sts	0x0088, r24	; 0x800088 <__data_end>
+		
+		if ( NewPosition < 16 && NewPosition >= 0 )
+ 2ee:	60 31       	cpi	r22, 0x10	; 16
+ 2f0:	a0 f4       	brcc	.+40     	; 0x31a <LCD_GOTO_XY+0x3c>
+		{
+			LCD_WRITE_COMMAND(LCD_BEGIN_AT_FIRST_ROW + NewPosition);
+ 2f2:	80 e8       	ldi	r24, 0x80	; 128
+ 2f4:	86 0f       	add	r24, r22
+ 2f6:	0e 94 3e 01 	call	0x27c	; 0x27c <LCD_WRITE_COMMAND>
+ 2fa:	08 95       	ret
+		}
+	}
+	else if ( Newline == 1 )
+ 2fc:	81 30       	cpi	r24, 0x01	; 1
+ 2fe:	69 f4       	brne	.+26     	; 0x31a <LCD_GOTO_XY+0x3c>
+	{
+		Position = NewPosition + 16;
+ 300:	86 2f       	mov	r24, r22
+ 302:	90 e0       	ldi	r25, 0x00	; 0
+ 304:	40 96       	adiw	r24, 0x10	; 16
+ 306:	90 93 89 00 	sts	0x0089, r25	; 0x800089 <__data_end+0x1>
+ 30a:	80 93 88 00 	sts	0x0088, r24	; 0x800088 <__data_end>
+				
+		if ( NewPosition < 16 && NewPosition >= 0 )
+ 30e:	60 31       	cpi	r22, 0x10	; 16
+ 310:	20 f4       	brcc	.+8      	; 0x31a <LCD_GOTO_XY+0x3c>
+		{
+			LCD_WRITE_COMMAND(LCD_BEGIN_AT_SECOND_ROW + NewPosition);
+ 312:	80 ec       	ldi	r24, 0xC0	; 192
+ 314:	86 0f       	add	r24, r22
+ 316:	0e 94 3e 01 	call	0x27c	; 0x27c <LCD_WRITE_COMMAND>
+ 31a:	08 95       	ret
+
+0000031c <LCD_IsValid_Position>:
+	}	
+}
+
+void LCD_IsValid_Position(void)
+{
+	Position++;
+ 31c:	80 91 88 00 	lds	r24, 0x0088	; 0x800088 <__data_end>
+ 320:	90 91 89 00 	lds	r25, 0x0089	; 0x800089 <__data_end+0x1>
+ 324:	01 96       	adiw	r24, 0x01	; 1
+ 326:	90 93 89 00 	sts	0x0089, r25	; 0x800089 <__data_end+0x1>
+ 32a:	80 93 88 00 	sts	0x0088, r24	; 0x800088 <__data_end>
+	
+	if (Position == 16)
+ 32e:	80 31       	cpi	r24, 0x10	; 16
+ 330:	91 05       	cpc	r25, r1
+ 332:	29 f4       	brne	.+10     	; 0x33e <LCD_IsValid_Position+0x22>
+	{
+		LCD_GOTO_XY(1,0);
+ 334:	60 e0       	ldi	r22, 0x00	; 0
+ 336:	81 e0       	ldi	r24, 0x01	; 1
+ 338:	0e 94 6f 01 	call	0x2de	; 0x2de <LCD_GOTO_XY>
+ 33c:	08 95       	ret
+	}
+	else if (Position == 32 )
+ 33e:	80 97       	sbiw	r24, 0x20	; 32
+ 340:	51 f4       	brne	.+20     	; 0x356 <LCD_IsValid_Position+0x3a>
+	{
+		LCD_Clear_Screen();
+ 342:	0e 94 4a 01 	call	0x294	; 0x294 <LCD_Clear_Screen>
+		LCD_GOTO_XY(0,0);
+ 346:	60 e0       	ldi	r22, 0x00	; 0
+ 348:	80 e0       	ldi	r24, 0x00	; 0
+ 34a:	0e 94 6f 01 	call	0x2de	; 0x2de <LCD_GOTO_XY>
+		Position = 0;
+ 34e:	10 92 89 00 	sts	0x0089, r1	; 0x800089 <__data_end+0x1>
+ 352:	10 92 88 00 	sts	0x0088, r1	; 0x800088 <__data_end>
+ 356:	08 95       	ret
+
+00000358 <LCD_WRITE_CHAR>:
+	       LCD_Kick();		   	       
+	#endif	
+}
+
+void LCD_WRITE_CHAR(unsigned char character)
+{
+ 358:	cf 93       	push	r28
+ 35a:	c8 2f       	mov	r28, r24
+	LCD_isbusy();
+ 35c:	0e 94 2d 01 	call	0x25a	; 0x25a <LCD_isbusy>
+
+	#ifdef EIGHT_BIT_MODE
+	       LCD_PORT = character;
+ 360:	cb bb       	out	0x1b, r28	; 27
+		   LCD_CTRL &= ~(1 << RW_SWITCH);
+ 362:	88 b3       	in	r24, 0x18	; 24
+ 364:	8b 7f       	andi	r24, 0xFB	; 251
+ 366:	88 bb       	out	0x18, r24	; 24
+		   LCD_CTRL |= (1 << RS_SWITCH);
+ 368:	88 b3       	in	r24, 0x18	; 24
+ 36a:	82 60       	ori	r24, 0x02	; 2
+ 36c:	88 bb       	out	0x18, r24	; 24
+		   LCD_Kick();
+ 36e:	0e 94 20 01 	call	0x240	; 0x240 <LCD_Kick>
+	       LCD_PORT = (LCD_PORT & 0x0F) | (character & 0xF0);   // Lower Nibble
+	       LCD_CTRL &= ~((1 << RS_SWITCH) | (1<<RW_SWITCH));
+	       LCD_Kick();	
+	#endif	
+	
+	LCD_IsValid_Position();
+ 372:	0e 94 8e 01 	call	0x31c	; 0x31c <LCD_IsValid_Position>
+}
+ 376:	cf 91       	pop	r28
+ 378:	08 95       	ret
+
+0000037a <LCD_WRITE_STRING>:
+
+void LCD_WRITE_STRING(char* string)
+{	
+ 37a:	cf 93       	push	r28
+ 37c:	df 93       	push	r29
+ 37e:	ec 01       	movw	r28, r24
+	while (*string > 0)
+ 380:	03 c0       	rjmp	.+6      	; 0x388 <LCD_WRITE_STRING+0xe>
+		LCD_WRITE_CHAR(*string++);
+ 382:	21 96       	adiw	r28, 0x01	; 1
+ 384:	0e 94 ac 01 	call	0x358	; 0x358 <LCD_WRITE_CHAR>
+	LCD_IsValid_Position();
+}
+
+void LCD_WRITE_STRING(char* string)
+{	
+	while (*string > 0)
+ 388:	88 81       	ld	r24, Y
+ 38a:	81 11       	cpse	r24, r1
+ 38c:	fa cf       	rjmp	.-12     	; 0x382 <LCD_WRITE_STRING+0x8>
+		LCD_WRITE_CHAR(*string++);
+}
+ 38e:	df 91       	pop	r29
+ 390:	cf 91       	pop	r28
+ 392:	08 95       	ret
+
+00000394 <main>:
+#include "LCD/lcd.h"
+
+int main(void)
+{
+    /* Replace with your application code */
+	 Keypad_Init();
+ 394:	0e 94 49 00 	call	0x92	; 0x92 <Keypad_Init>
+	 LCD_INIT();
+ 398:	0e 94 52 01 	call	0x2a4	; 0x2a4 <LCD_INIT>
+	 
+	 char* str1 = "INITILIZATION";
+	 char* str2 = "COMPLETE";
+	 LCD_GOTO_XY(0, 1);
+ 39c:	61 e0       	ldi	r22, 0x01	; 1
+ 39e:	80 e0       	ldi	r24, 0x00	; 0
+ 3a0:	0e 94 6f 01 	call	0x2de	; 0x2de <LCD_GOTO_XY>
+	 LCD_WRITE_STRING(str1);
+ 3a4:	80 e7       	ldi	r24, 0x70	; 112
+ 3a6:	90 e0       	ldi	r25, 0x00	; 0
+ 3a8:	0e 94 bd 01 	call	0x37a	; 0x37a <LCD_WRITE_STRING>
+	 LCD_GOTO_XY(1, 3);
+ 3ac:	63 e0       	ldi	r22, 0x03	; 3
+ 3ae:	81 e0       	ldi	r24, 0x01	; 1
+ 3b0:	0e 94 6f 01 	call	0x2de	; 0x2de <LCD_GOTO_XY>
+	 LCD_WRITE_STRING(str2);
+ 3b4:	8e e7       	ldi	r24, 0x7E	; 126
+ 3b6:	90 e0       	ldi	r25, 0x00	; 0
+ 3b8:	0e 94 bd 01 	call	0x37a	; 0x37a <LCD_WRITE_STRING>
+ 3bc:	2f e7       	ldi	r18, 0x7F	; 127
+ 3be:	8a e1       	ldi	r24, 0x1A	; 26
+ 3c0:	96 e0       	ldi	r25, 0x06	; 6
+ 3c2:	21 50       	subi	r18, 0x01	; 1
+ 3c4:	80 40       	sbci	r24, 0x00	; 0
+ 3c6:	90 40       	sbci	r25, 0x00	; 0
+ 3c8:	e1 f7       	brne	.-8      	; 0x3c2 <main+0x2e>
+ 3ca:	00 c0       	rjmp	.+0      	; 0x3cc <main+0x38>
+ 3cc:	00 00       	nop
+	 _delay_ms(2000);
+	 LCD_Clear_Screen();
+ 3ce:	0e 94 4a 01 	call	0x294	; 0x294 <LCD_Clear_Screen>
+	 
+    while (1) 
+    {
+		unsigned char key_pressed = Keypad_GetKey();
+ 3d2:	0e 94 52 00 	call	0xa4	; 0xa4 <Keypad_GetKey>
+		
+		switch(key_pressed)
+ 3d6:	81 32       	cpi	r24, 0x21	; 33
+ 3d8:	29 f0       	breq	.+10     	; 0x3e4 <main+0x50>
+ 3da:	8e 34       	cpi	r24, 0x4E	; 78
+ 3dc:	d1 f3       	breq	.-12     	; 0x3d2 <main+0x3e>
+		{
+		default:
+			LCD_WRITE_CHAR(key_pressed);
+ 3de:	0e 94 ac 01 	call	0x358	; 0x358 <LCD_WRITE_CHAR>
+			break;			
+ 3e2:	f7 cf       	rjmp	.-18     	; 0x3d2 <main+0x3e>
+		case '!':
+			LCD_Clear_Screen();
+ 3e4:	0e 94 4a 01 	call	0x294	; 0x294 <LCD_Clear_Screen>
+			break;
+ 3e8:	f4 cf       	rjmp	.-24     	; 0x3d2 <main+0x3e>
+
+000003ea <_exit>:
+ 3ea:	f8 94       	cli
+
+000003ec <__stop_program>:
+ 3ec:	ff cf       	rjmp	.-2      	; 0x3ec <__stop_program>
