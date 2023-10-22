@@ -1,0 +1,46 @@
+/*
+ * sevensegment.c
+ *
+ *  Created on: Oct 22, 2023
+ *      Author: Abdelaziz Maher
+ */
+
+
+#include "sevensegment.h"
+
+void SevSegment_Init(void)
+{
+	GPIO_PinConfig_t cfg;
+
+
+	cfg.GPIO_Mode = GPIO_PIN_MODE_OUTPUT_PP;
+	cfg.GPIO_Output_Speed = GPIO_PIN_SPEED_10MHZ;
+
+	cfg.GPIO_PinNumber = A ;
+	MCAL_GPIO_Init(KeyPad_PORT, &cfg);
+
+	cfg.GPIO_PinNumber = B ;
+	MCAL_GPIO_Init(KeyPad_PORT, &cfg);
+
+	cfg.GPIO_PinNumber = C ;
+	MCAL_GPIO_Init(KeyPad_PORT, &cfg);
+
+	cfg.GPIO_PinNumber = D ;
+	MCAL_GPIO_Init(KeyPad_PORT, &cfg);
+
+	cfg.GPIO_PinNumber = E ;
+	MCAL_GPIO_Init(KeyPad_PORT, &cfg);
+
+	cfg.GPIO_PinNumber = F ;
+	MCAL_GPIO_Init(KeyPad_PORT, &cfg);
+
+	cfg.GPIO_PinNumber = G ;
+	MCAL_GPIO_Init(KeyPad_PORT, &cfg);
+
+}
+
+
+void SevSegment_Write_Num(unsigned char num)
+{
+
+}

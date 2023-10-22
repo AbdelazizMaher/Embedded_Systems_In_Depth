@@ -1,0 +1,75 @@
+/*
+ * sevensegment.c
+ *
+ *  Created on: Oct 22, 2023
+ *      Author: Abdelaziz Maher
+ */
+
+
+#include "sevensegment.h"
+
+uint8_t seg_Numbers[] = {ZERO, ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE};
+
+void SevSegment_Init(void)
+{
+	//Enable clock
+	GPIOA_CLOCK_ENABLE();
+
+	GPIO_PinConfig_t cfg;
+
+	cfg.GPIO_Mode = GPIO_PIN_MODE_OUTPUT_PP;
+	cfg.GPIO_Output_Speed = GPIO_PIN_SPEED_10MHZ;
+
+	cfg.GPIO_PinNumber = A ;
+	MCAL_GPIO_Init(KeyPad_PORT, &cfg);
+
+	cfg.GPIO_PinNumber = B ;
+	MCAL_GPIO_Init(KeyPad_PORT, &cfg);
+
+	cfg.GPIO_PinNumber = C ;
+	MCAL_GPIO_Init(KeyPad_PORT, &cfg);
+
+	cfg.GPIO_PinNumber = D ;
+	MCAL_GPIO_Init(KeyPad_PORT, &cfg);
+
+	cfg.GPIO_PinNumber = E ;
+	MCAL_GPIO_Init(KeyPad_PORT, &cfg);
+
+	cfg.GPIO_PinNumber = F ;
+	MCAL_GPIO_Init(KeyPad_PORT, &cfg);
+
+	cfg.GPIO_PinNumber = G ;
+	MCAL_GPIO_Init(KeyPad_PORT, &cfg);
+
+}
+
+
+void SevSegment_Write_Num(unsigned char num)
+{
+	switch(num)
+	{
+	case 0:
+		break;
+	case 1:
+		break;
+	case 2:
+		break;
+	case 3:
+		break;
+	case 4:
+		break;
+	case 5:
+		break;
+	case 6:
+		break;
+	case 7:
+		break;
+	case 8:
+		break;
+	case 9:
+		break;
+	default:
+		break;
+	}
+
+}
