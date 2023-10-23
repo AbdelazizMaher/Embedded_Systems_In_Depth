@@ -1,9 +1,0 @@
-/*
- * Stm32f103c6_EXTI_Driver.c
- *
- *  Created on: Mar 1, 2023
- *      Author: Abdelaziz Maher
- */
-
-
-#include"Stm32f103c6_EXTI_Driver.h"

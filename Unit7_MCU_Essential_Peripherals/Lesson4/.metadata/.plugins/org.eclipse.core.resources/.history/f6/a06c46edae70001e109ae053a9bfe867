@@ -1,0 +1,70 @@
+/*
+ * 02_lcd&keypad_Test.c
+ *
+ *  Created on: Oct 21, 2023
+ *      Author: Abdelaziz Maher
+ */
+
+
+#include <stdint.h>
+
+#if !defined(__SOFT_FP__) && defined(__ARM_FP)
+  #warning "FPU is not initialized, but the project is compiling for an FPU. Please initialize the FPU before use."
+#endif
+
+#include"Stm32f103x6.h"
+#include"Stm32f103c6_GPIO_Driver.h"
+#include "keypad.h"
+#include "lcd.h"
+#include "sevensegment.h"
+
+void Wait(unsigned int x)
+{
+	int i,j;
+
+	for(i = 0 ; i < x ; i++)
+		for(j = 0 ; j < 255 ; j++);
+}
+
+
+
+int main(void)
+{
+
+	 SevSegment_Init();
+	 LCD_INIT();
+
+	 char* str1 = "INITILIZATION";
+	 char* str2 = "COMPLETE";
+	 LCD_GOTO_XY(0, 1);
+	 LCD_WRITE_STRING(str1);
+	 LCD_GOTO_XY(1, 3);
+	 LCD_WRITE_STRING(str2);
+	 Wait(2000);
+	 LCD_Clear_Screen();
+	 uint8_t i;
+	 for(i = 0 ; i < 10 ; i++)
+	 {
+		 SevSegment_Write_Num(i);
+		 LCD_WRITE_CHAR(i);
+	 }
+
+	 Keypad_Init();
+
+    while (1)
+    {
+		unsigned char key_pressed = Keypad_GetKey();
+
+		switch(key_pressed)
+		{
+		default:
+			LCD_WRITE_CHAR(key_pressed);
+			break;
+		case '!':
+			LCD_Clear_Screen();
+			break;
+		case 'N':
+			break;
+		}
+    }
+}
