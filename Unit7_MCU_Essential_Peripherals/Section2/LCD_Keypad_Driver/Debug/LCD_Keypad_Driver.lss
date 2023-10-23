@@ -3,13 +3,13 @@ LCD_Keypad_Driver.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         000003ee  00000000  00000000  00000094  2**1
+  0 .text         000003f0  00000000  00000000  00000094  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .data         00000028  00800060  000003ee  00000482  2**0
+  1 .data         00000028  00800060  000003f0  00000484  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  2 .bss          00000002  00800088  00800088  000004aa  2**0
+  2 .bss          00000002  00800088  00800088  000004ac  2**0
                   ALLOC
-  3 .comment      00000030  00000000  00000000  000004aa  2**0
+  3 .comment      00000030  00000000  00000000  000004ac  2**0
                   CONTENTS, READONLY
   4 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  000004dc  2**2
                   CONTENTS, READONLY
@@ -67,7 +67,7 @@ Disassembly of section .text:
   60:	10 e0       	ldi	r17, 0x00	; 0
   62:	a0 e6       	ldi	r26, 0x60	; 96
   64:	b0 e0       	ldi	r27, 0x00	; 0
-  66:	ee ee       	ldi	r30, 0xEE	; 238
+  66:	e0 ef       	ldi	r30, 0xF0	; 240
   68:	f3 e0       	ldi	r31, 0x03	; 3
   6a:	02 c0       	rjmp	.+4      	; 0x70 <__do_copy_data+0x10>
   6c:	05 90       	lpm	r0, Z+
@@ -89,8 +89,8 @@ Disassembly of section .text:
   80:	aa 38       	cpi	r26, 0x8A	; 138
   82:	b2 07       	cpc	r27, r18
   84:	e1 f7       	brne	.-8      	; 0x7e <.do_clear_bss_loop>
-  86:	0e 94 ca 01 	call	0x394	; 0x394 <main>
-  8a:	0c 94 f5 01 	jmp	0x3ea	; 0x3ea <_exit>
+  86:	0e 94 cb 01 	call	0x396	; 0x396 <main>
+  8a:	0c 94 f6 01 	jmp	0x3ec	; 0x3ec <_exit>
 
 0000008e <__bad_interrupt>:
   8e:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
@@ -455,340 +455,341 @@ void LCD_Kick(void)
 
 void LCD_isbusy(void)
 {
-	LCD_PORT_DataDir &= ~(0xFF);             // Make 7th bit of LCD data port as input
+	LCD_PORT_DataDir &= ~(1<<7);             // Make 7th bit of LCD data port as input
  25a:	8a b3       	in	r24, 0x1a	; 26
- 25c:	1a ba       	out	0x1a, r1	; 26
+ 25c:	8f 77       	andi	r24, 0x7F	; 127
+ 25e:	8a bb       	out	0x1a, r24	; 26
 	LCD_CTRL |=  (1<<RW_SWITCH);     // Read Mode
- 25e:	88 b3       	in	r24, 0x18	; 24
- 260:	84 60       	ori	r24, 0x04	; 4
- 262:	88 bb       	out	0x18, r24	; 24
+ 260:	88 b3       	in	r24, 0x18	; 24
+ 262:	84 60       	ori	r24, 0x04	; 4
+ 264:	88 bb       	out	0x18, r24	; 24
 	LCD_CTRL &= ~(1<<RS_SWITCH);     // Select command register
- 264:	88 b3       	in	r24, 0x18	; 24
- 266:	8d 7f       	andi	r24, 0xFD	; 253
- 268:	88 bb       	out	0x18, r24	; 24
+ 266:	88 b3       	in	r24, 0x18	; 24
+ 268:	8d 7f       	andi	r24, 0xFD	; 253
+ 26a:	88 bb       	out	0x18, r24	; 24
 	
 //	while( (PINB>>7) & 1 )                   //read 7th bit again and again till it becomes 0
 	{
 		LCD_Kick();
- 26a:	0e 94 20 01 	call	0x240	; 0x240 <LCD_Kick>
+ 26c:	0e 94 20 01 	call	0x240	; 0x240 <LCD_Kick>
 	}                              
 	
-	LCD_PORT_DataDir |= (0xFF);              // Make 7th bit of LCD data port as output
- 26e:	8a b3       	in	r24, 0x1a	; 26
- 270:	8f ef       	ldi	r24, 0xFF	; 255
- 272:	8a bb       	out	0x1a, r24	; 26
+	LCD_PORT_DataDir |= (1<<7);              // Make 7th bit of LCD data port as output
+ 270:	8a b3       	in	r24, 0x1a	; 26
+ 272:	80 68       	ori	r24, 0x80	; 128
+ 274:	8a bb       	out	0x1a, r24	; 26
 	LCD_CTRL &= ~(1<<RW_SWITCH);     // Write Mode	
- 274:	88 b3       	in	r24, 0x18	; 24
- 276:	8b 7f       	andi	r24, 0xFB	; 251
- 278:	88 bb       	out	0x18, r24	; 24
- 27a:	08 95       	ret
+ 276:	88 b3       	in	r24, 0x18	; 24
+ 278:	8b 7f       	andi	r24, 0xFB	; 251
+ 27a:	88 bb       	out	0x18, r24	; 24
+ 27c:	08 95       	ret
 
-0000027c <LCD_WRITE_COMMAND>:
+0000027e <LCD_WRITE_COMMAND>:
 	LCD_WRITE_COMMAND(LCD_BEGIN_AT_FIRST_ROW);
 	LCD_WRITE_COMMAND(LCD_DISP_ON_CURSOR_BLINK);
 }
 
 void LCD_WRITE_COMMAND(unsigned char command)
 {
- 27c:	cf 93       	push	r28
- 27e:	c8 2f       	mov	r28, r24
+ 27e:	cf 93       	push	r28
+ 280:	c8 2f       	mov	r28, r24
 	LCD_isbusy();
- 280:	0e 94 2d 01 	call	0x25a	; 0x25a <LCD_isbusy>
+ 282:	0e 94 2d 01 	call	0x25a	; 0x25a <LCD_isbusy>
 	
 	#ifdef EIGHT_BIT_MODE
 	       LCD_PORT = command;
- 284:	cb bb       	out	0x1b, r28	; 27
+ 286:	cb bb       	out	0x1b, r28	; 27
 	       LCD_CTRL &= ~((1 << RS_SWITCH) | (1<<RW_SWITCH)); 
- 286:	88 b3       	in	r24, 0x18	; 24
- 288:	89 7f       	andi	r24, 0xF9	; 249
- 28a:	88 bb       	out	0x18, r24	; 24
+ 288:	88 b3       	in	r24, 0x18	; 24
+ 28a:	89 7f       	andi	r24, 0xF9	; 249
+ 28c:	88 bb       	out	0x18, r24	; 24
 		   LCD_Kick();		
- 28c:	0e 94 20 01 	call	0x240	; 0x240 <LCD_Kick>
+ 28e:	0e 94 20 01 	call	0x240	; 0x240 <LCD_Kick>
 	       LCD_Kick();
 	       LCD_PORT = (LCD_PORT & 0x0F) | (command & 0xF0);   // Lower Nibble
 	       LCD_CTRL &= ~((1 << RS_SWITCH) | (1<<RW_SWITCH));
 	       LCD_Kick();		   	       
 	#endif	
 }
- 290:	cf 91       	pop	r28
- 292:	08 95       	ret
+ 292:	cf 91       	pop	r28
+ 294:	08 95       	ret
 
-00000294 <LCD_Clear_Screen>:
+00000296 <LCD_Clear_Screen>:
 	LCD_CTRL &= ~(1 << EN_SWITCH);	
 }
 
 void LCD_Clear_Screen(void)
 {
 	Position = 0;
- 294:	10 92 89 00 	sts	0x0089, r1	; 0x800089 <__data_end+0x1>
- 298:	10 92 88 00 	sts	0x0088, r1	; 0x800088 <__data_end>
+ 296:	10 92 89 00 	sts	0x0089, r1	; 0x800089 <__data_end+0x1>
+ 29a:	10 92 88 00 	sts	0x0088, r1	; 0x800088 <__data_end>
 	LCD_WRITE_COMMAND(LCD_CLEAR_SCREEN);
- 29c:	81 e0       	ldi	r24, 0x01	; 1
- 29e:	0e 94 3e 01 	call	0x27c	; 0x27c <LCD_WRITE_COMMAND>
- 2a2:	08 95       	ret
+ 29e:	81 e0       	ldi	r24, 0x01	; 1
+ 2a0:	0e 94 3f 01 	call	0x27e	; 0x27e <LCD_WRITE_COMMAND>
+ 2a4:	08 95       	ret
 
-000002a4 <LCD_INIT>:
- 2a4:	83 ed       	ldi	r24, 0xD3	; 211
- 2a6:	90 e3       	ldi	r25, 0x30	; 48
- 2a8:	01 97       	sbiw	r24, 0x01	; 1
- 2aa:	f1 f7       	brne	.-4      	; 0x2a8 <LCD_INIT+0x4>
- 2ac:	00 c0       	rjmp	.+0      	; 0x2ae <LCD_INIT+0xa>
- 2ae:	00 00       	nop
+000002a6 <LCD_INIT>:
+ 2a6:	83 ed       	ldi	r24, 0xD3	; 211
+ 2a8:	90 e3       	ldi	r25, 0x30	; 48
+ 2aa:	01 97       	sbiw	r24, 0x01	; 1
+ 2ac:	f1 f7       	brne	.-4      	; 0x2aa <LCD_INIT+0x4>
+ 2ae:	00 c0       	rjmp	.+0      	; 0x2b0 <LCD_INIT+0xa>
+ 2b0:	00 00       	nop
 
 void LCD_INIT(void)
 {
 	_delay_ms(50);         // LCD power ON delay
 	
 	LCD_CTRL_DataDir |= ( (1<<RS_SWITCH) | (1<<RW_SWITCH) | (1<<EN_SWITCH) );  
- 2b0:	87 b3       	in	r24, 0x17	; 23
- 2b2:	8e 60       	ori	r24, 0x0E	; 14
- 2b4:	87 bb       	out	0x17, r24	; 23
+ 2b2:	87 b3       	in	r24, 0x17	; 23
+ 2b4:	8e 60       	ori	r24, 0x0E	; 14
+ 2b6:	87 bb       	out	0x17, r24	; 23
 	LCD_CTRL &= ~ ( (1<<RS_SWITCH) | (1<<RW_SWITCH) | (1<<EN_SWITCH) );
- 2b6:	88 b3       	in	r24, 0x18	; 24
- 2b8:	81 7f       	andi	r24, 0xF1	; 241
- 2ba:	88 bb       	out	0x18, r24	; 24
+ 2b8:	88 b3       	in	r24, 0x18	; 24
+ 2ba:	81 7f       	andi	r24, 0xF1	; 241
+ 2bc:	88 bb       	out	0x18, r24	; 24
 	
 	#ifdef EIGHT_BIT_MODE	
 	        LCD_PORT_DataDir = 0xFF;
- 2bc:	8f ef       	ldi	r24, 0xFF	; 255
- 2be:	8a bb       	out	0x1a, r24	; 26
+ 2be:	8f ef       	ldi	r24, 0xFF	; 255
+ 2c0:	8a bb       	out	0x1a, r24	; 26
 	        LCD_WRITE_COMMAND(LCD_FUNCTION_8BIT_2LINES);	
- 2c0:	88 e3       	ldi	r24, 0x38	; 56
- 2c2:	0e 94 3e 01 	call	0x27c	; 0x27c <LCD_WRITE_COMMAND>
+ 2c2:	88 e3       	ldi	r24, 0x38	; 56
+ 2c4:	0e 94 3f 01 	call	0x27e	; 0x27e <LCD_WRITE_COMMAND>
 		   LCD_PORT_DataDir |= 0xF0;
 	       LCD_WRITE_COMMAND(0x02);
 		   LCD_WRITE_COMMAND(LCD_FUNCTION_4BIT_2LINES);
 	#endif
 	
 	LCD_Clear_Screen();
- 2c6:	0e 94 4a 01 	call	0x294	; 0x294 <LCD_Clear_Screen>
+ 2c8:	0e 94 4b 01 	call	0x296	; 0x296 <LCD_Clear_Screen>
 	LCD_WRITE_COMMAND(LCD_ENTRY_MODE);
- 2ca:	86 e0       	ldi	r24, 0x06	; 6
- 2cc:	0e 94 3e 01 	call	0x27c	; 0x27c <LCD_WRITE_COMMAND>
+ 2cc:	86 e0       	ldi	r24, 0x06	; 6
+ 2ce:	0e 94 3f 01 	call	0x27e	; 0x27e <LCD_WRITE_COMMAND>
 	LCD_WRITE_COMMAND(LCD_BEGIN_AT_FIRST_ROW);
- 2d0:	80 e8       	ldi	r24, 0x80	; 128
- 2d2:	0e 94 3e 01 	call	0x27c	; 0x27c <LCD_WRITE_COMMAND>
+ 2d2:	80 e8       	ldi	r24, 0x80	; 128
+ 2d4:	0e 94 3f 01 	call	0x27e	; 0x27e <LCD_WRITE_COMMAND>
 	LCD_WRITE_COMMAND(LCD_DISP_ON_CURSOR_BLINK);
- 2d6:	8f e0       	ldi	r24, 0x0F	; 15
- 2d8:	0e 94 3e 01 	call	0x27c	; 0x27c <LCD_WRITE_COMMAND>
- 2dc:	08 95       	ret
+ 2d8:	8f e0       	ldi	r24, 0x0F	; 15
+ 2da:	0e 94 3f 01 	call	0x27e	; 0x27e <LCD_WRITE_COMMAND>
+ 2de:	08 95       	ret
 
-000002de <LCD_GOTO_XY>:
+000002e0 <LCD_GOTO_XY>:
 	LCD_WRITE_COMMAND(LCD_CLEAR_SCREEN);
 }
 
 void LCD_GOTO_XY(unsigned char Newline, unsigned char NewPosition)
 {
 	if ( Newline == 0 )
- 2de:	81 11       	cpse	r24, r1
- 2e0:	0d c0       	rjmp	.+26     	; 0x2fc <LCD_GOTO_XY+0x1e>
+ 2e0:	81 11       	cpse	r24, r1
+ 2e2:	0d c0       	rjmp	.+26     	; 0x2fe <LCD_GOTO_XY+0x1e>
 	{
 		Position = NewPosition;
- 2e2:	86 2f       	mov	r24, r22
- 2e4:	90 e0       	ldi	r25, 0x00	; 0
- 2e6:	90 93 89 00 	sts	0x0089, r25	; 0x800089 <__data_end+0x1>
- 2ea:	80 93 88 00 	sts	0x0088, r24	; 0x800088 <__data_end>
+ 2e4:	86 2f       	mov	r24, r22
+ 2e6:	90 e0       	ldi	r25, 0x00	; 0
+ 2e8:	90 93 89 00 	sts	0x0089, r25	; 0x800089 <__data_end+0x1>
+ 2ec:	80 93 88 00 	sts	0x0088, r24	; 0x800088 <__data_end>
 		
 		if ( NewPosition < 16 && NewPosition >= 0 )
- 2ee:	60 31       	cpi	r22, 0x10	; 16
- 2f0:	a0 f4       	brcc	.+40     	; 0x31a <LCD_GOTO_XY+0x3c>
+ 2f0:	60 31       	cpi	r22, 0x10	; 16
+ 2f2:	a0 f4       	brcc	.+40     	; 0x31c <LCD_GOTO_XY+0x3c>
 		{
 			LCD_WRITE_COMMAND(LCD_BEGIN_AT_FIRST_ROW + NewPosition);
- 2f2:	80 e8       	ldi	r24, 0x80	; 128
- 2f4:	86 0f       	add	r24, r22
- 2f6:	0e 94 3e 01 	call	0x27c	; 0x27c <LCD_WRITE_COMMAND>
- 2fa:	08 95       	ret
+ 2f4:	80 e8       	ldi	r24, 0x80	; 128
+ 2f6:	86 0f       	add	r24, r22
+ 2f8:	0e 94 3f 01 	call	0x27e	; 0x27e <LCD_WRITE_COMMAND>
+ 2fc:	08 95       	ret
 		}
 	}
 	else if ( Newline == 1 )
- 2fc:	81 30       	cpi	r24, 0x01	; 1
- 2fe:	69 f4       	brne	.+26     	; 0x31a <LCD_GOTO_XY+0x3c>
+ 2fe:	81 30       	cpi	r24, 0x01	; 1
+ 300:	69 f4       	brne	.+26     	; 0x31c <LCD_GOTO_XY+0x3c>
 	{
 		Position = NewPosition + 16;
- 300:	86 2f       	mov	r24, r22
- 302:	90 e0       	ldi	r25, 0x00	; 0
- 304:	40 96       	adiw	r24, 0x10	; 16
- 306:	90 93 89 00 	sts	0x0089, r25	; 0x800089 <__data_end+0x1>
- 30a:	80 93 88 00 	sts	0x0088, r24	; 0x800088 <__data_end>
+ 302:	86 2f       	mov	r24, r22
+ 304:	90 e0       	ldi	r25, 0x00	; 0
+ 306:	40 96       	adiw	r24, 0x10	; 16
+ 308:	90 93 89 00 	sts	0x0089, r25	; 0x800089 <__data_end+0x1>
+ 30c:	80 93 88 00 	sts	0x0088, r24	; 0x800088 <__data_end>
 				
 		if ( NewPosition < 16 && NewPosition >= 0 )
- 30e:	60 31       	cpi	r22, 0x10	; 16
- 310:	20 f4       	brcc	.+8      	; 0x31a <LCD_GOTO_XY+0x3c>
+ 310:	60 31       	cpi	r22, 0x10	; 16
+ 312:	20 f4       	brcc	.+8      	; 0x31c <LCD_GOTO_XY+0x3c>
 		{
 			LCD_WRITE_COMMAND(LCD_BEGIN_AT_SECOND_ROW + NewPosition);
- 312:	80 ec       	ldi	r24, 0xC0	; 192
- 314:	86 0f       	add	r24, r22
- 316:	0e 94 3e 01 	call	0x27c	; 0x27c <LCD_WRITE_COMMAND>
- 31a:	08 95       	ret
+ 314:	80 ec       	ldi	r24, 0xC0	; 192
+ 316:	86 0f       	add	r24, r22
+ 318:	0e 94 3f 01 	call	0x27e	; 0x27e <LCD_WRITE_COMMAND>
+ 31c:	08 95       	ret
 
-0000031c <LCD_IsValid_Position>:
+0000031e <LCD_IsValid_Position>:
 	}	
 }
 
 void LCD_IsValid_Position(void)
 {
 	Position++;
- 31c:	80 91 88 00 	lds	r24, 0x0088	; 0x800088 <__data_end>
- 320:	90 91 89 00 	lds	r25, 0x0089	; 0x800089 <__data_end+0x1>
- 324:	01 96       	adiw	r24, 0x01	; 1
- 326:	90 93 89 00 	sts	0x0089, r25	; 0x800089 <__data_end+0x1>
- 32a:	80 93 88 00 	sts	0x0088, r24	; 0x800088 <__data_end>
+ 31e:	80 91 88 00 	lds	r24, 0x0088	; 0x800088 <__data_end>
+ 322:	90 91 89 00 	lds	r25, 0x0089	; 0x800089 <__data_end+0x1>
+ 326:	01 96       	adiw	r24, 0x01	; 1
+ 328:	90 93 89 00 	sts	0x0089, r25	; 0x800089 <__data_end+0x1>
+ 32c:	80 93 88 00 	sts	0x0088, r24	; 0x800088 <__data_end>
 	
 	if (Position == 16)
- 32e:	80 31       	cpi	r24, 0x10	; 16
- 330:	91 05       	cpc	r25, r1
- 332:	29 f4       	brne	.+10     	; 0x33e <LCD_IsValid_Position+0x22>
+ 330:	80 31       	cpi	r24, 0x10	; 16
+ 332:	91 05       	cpc	r25, r1
+ 334:	29 f4       	brne	.+10     	; 0x340 <LCD_IsValid_Position+0x22>
 	{
 		LCD_GOTO_XY(1,0);
- 334:	60 e0       	ldi	r22, 0x00	; 0
- 336:	81 e0       	ldi	r24, 0x01	; 1
- 338:	0e 94 6f 01 	call	0x2de	; 0x2de <LCD_GOTO_XY>
- 33c:	08 95       	ret
+ 336:	60 e0       	ldi	r22, 0x00	; 0
+ 338:	81 e0       	ldi	r24, 0x01	; 1
+ 33a:	0e 94 70 01 	call	0x2e0	; 0x2e0 <LCD_GOTO_XY>
+ 33e:	08 95       	ret
 	}
 	else if (Position == 32 )
- 33e:	80 97       	sbiw	r24, 0x20	; 32
- 340:	51 f4       	brne	.+20     	; 0x356 <LCD_IsValid_Position+0x3a>
+ 340:	80 97       	sbiw	r24, 0x20	; 32
+ 342:	51 f4       	brne	.+20     	; 0x358 <LCD_IsValid_Position+0x3a>
 	{
 		LCD_Clear_Screen();
- 342:	0e 94 4a 01 	call	0x294	; 0x294 <LCD_Clear_Screen>
+ 344:	0e 94 4b 01 	call	0x296	; 0x296 <LCD_Clear_Screen>
 		LCD_GOTO_XY(0,0);
- 346:	60 e0       	ldi	r22, 0x00	; 0
- 348:	80 e0       	ldi	r24, 0x00	; 0
- 34a:	0e 94 6f 01 	call	0x2de	; 0x2de <LCD_GOTO_XY>
+ 348:	60 e0       	ldi	r22, 0x00	; 0
+ 34a:	80 e0       	ldi	r24, 0x00	; 0
+ 34c:	0e 94 70 01 	call	0x2e0	; 0x2e0 <LCD_GOTO_XY>
 		Position = 0;
- 34e:	10 92 89 00 	sts	0x0089, r1	; 0x800089 <__data_end+0x1>
- 352:	10 92 88 00 	sts	0x0088, r1	; 0x800088 <__data_end>
- 356:	08 95       	ret
+ 350:	10 92 89 00 	sts	0x0089, r1	; 0x800089 <__data_end+0x1>
+ 354:	10 92 88 00 	sts	0x0088, r1	; 0x800088 <__data_end>
+ 358:	08 95       	ret
 
-00000358 <LCD_WRITE_CHAR>:
+0000035a <LCD_WRITE_CHAR>:
 	       LCD_Kick();		   	       
 	#endif	
 }
 
 void LCD_WRITE_CHAR(unsigned char character)
 {
- 358:	cf 93       	push	r28
- 35a:	c8 2f       	mov	r28, r24
+ 35a:	cf 93       	push	r28
+ 35c:	c8 2f       	mov	r28, r24
 	LCD_isbusy();
- 35c:	0e 94 2d 01 	call	0x25a	; 0x25a <LCD_isbusy>
+ 35e:	0e 94 2d 01 	call	0x25a	; 0x25a <LCD_isbusy>
 
 	#ifdef EIGHT_BIT_MODE
 	       LCD_PORT = character;
- 360:	cb bb       	out	0x1b, r28	; 27
+ 362:	cb bb       	out	0x1b, r28	; 27
 		   LCD_CTRL &= ~(1 << RW_SWITCH);
- 362:	88 b3       	in	r24, 0x18	; 24
- 364:	8b 7f       	andi	r24, 0xFB	; 251
- 366:	88 bb       	out	0x18, r24	; 24
+ 364:	88 b3       	in	r24, 0x18	; 24
+ 366:	8b 7f       	andi	r24, 0xFB	; 251
+ 368:	88 bb       	out	0x18, r24	; 24
 		   LCD_CTRL |= (1 << RS_SWITCH);
- 368:	88 b3       	in	r24, 0x18	; 24
- 36a:	82 60       	ori	r24, 0x02	; 2
- 36c:	88 bb       	out	0x18, r24	; 24
+ 36a:	88 b3       	in	r24, 0x18	; 24
+ 36c:	82 60       	ori	r24, 0x02	; 2
+ 36e:	88 bb       	out	0x18, r24	; 24
 		   LCD_Kick();
- 36e:	0e 94 20 01 	call	0x240	; 0x240 <LCD_Kick>
+ 370:	0e 94 20 01 	call	0x240	; 0x240 <LCD_Kick>
 	       LCD_PORT = (LCD_PORT & 0x0F) | (character & 0xF0);   // Lower Nibble
 	       LCD_CTRL &= ~((1 << RS_SWITCH) | (1<<RW_SWITCH));
 	       LCD_Kick();	
 	#endif	
 	
 	LCD_IsValid_Position();
- 372:	0e 94 8e 01 	call	0x31c	; 0x31c <LCD_IsValid_Position>
+ 374:	0e 94 8f 01 	call	0x31e	; 0x31e <LCD_IsValid_Position>
 }
- 376:	cf 91       	pop	r28
- 378:	08 95       	ret
+ 378:	cf 91       	pop	r28
+ 37a:	08 95       	ret
 
-0000037a <LCD_WRITE_STRING>:
+0000037c <LCD_WRITE_STRING>:
 
 void LCD_WRITE_STRING(char* string)
 {	
- 37a:	cf 93       	push	r28
- 37c:	df 93       	push	r29
- 37e:	ec 01       	movw	r28, r24
+ 37c:	cf 93       	push	r28
+ 37e:	df 93       	push	r29
+ 380:	ec 01       	movw	r28, r24
 	while (*string > 0)
- 380:	03 c0       	rjmp	.+6      	; 0x388 <LCD_WRITE_STRING+0xe>
+ 382:	03 c0       	rjmp	.+6      	; 0x38a <LCD_WRITE_STRING+0xe>
 		LCD_WRITE_CHAR(*string++);
- 382:	21 96       	adiw	r28, 0x01	; 1
- 384:	0e 94 ac 01 	call	0x358	; 0x358 <LCD_WRITE_CHAR>
+ 384:	21 96       	adiw	r28, 0x01	; 1
+ 386:	0e 94 ad 01 	call	0x35a	; 0x35a <LCD_WRITE_CHAR>
 	LCD_IsValid_Position();
 }
 
 void LCD_WRITE_STRING(char* string)
 {	
 	while (*string > 0)
- 388:	88 81       	ld	r24, Y
- 38a:	81 11       	cpse	r24, r1
- 38c:	fa cf       	rjmp	.-12     	; 0x382 <LCD_WRITE_STRING+0x8>
+ 38a:	88 81       	ld	r24, Y
+ 38c:	81 11       	cpse	r24, r1
+ 38e:	fa cf       	rjmp	.-12     	; 0x384 <LCD_WRITE_STRING+0x8>
 		LCD_WRITE_CHAR(*string++);
 }
- 38e:	df 91       	pop	r29
- 390:	cf 91       	pop	r28
- 392:	08 95       	ret
+ 390:	df 91       	pop	r29
+ 392:	cf 91       	pop	r28
+ 394:	08 95       	ret
 
-00000394 <main>:
+00000396 <main>:
 #include "LCD/lcd.h"
 
 int main(void)
 {
     /* Replace with your application code */
 	 Keypad_Init();
- 394:	0e 94 49 00 	call	0x92	; 0x92 <Keypad_Init>
+ 396:	0e 94 49 00 	call	0x92	; 0x92 <Keypad_Init>
 	 LCD_INIT();
- 398:	0e 94 52 01 	call	0x2a4	; 0x2a4 <LCD_INIT>
+ 39a:	0e 94 53 01 	call	0x2a6	; 0x2a6 <LCD_INIT>
 	 
 	 char* str1 = "INITILIZATION";
 	 char* str2 = "COMPLETE";
 	 LCD_GOTO_XY(0, 1);
- 39c:	61 e0       	ldi	r22, 0x01	; 1
- 39e:	80 e0       	ldi	r24, 0x00	; 0
- 3a0:	0e 94 6f 01 	call	0x2de	; 0x2de <LCD_GOTO_XY>
+ 39e:	61 e0       	ldi	r22, 0x01	; 1
+ 3a0:	80 e0       	ldi	r24, 0x00	; 0
+ 3a2:	0e 94 70 01 	call	0x2e0	; 0x2e0 <LCD_GOTO_XY>
 	 LCD_WRITE_STRING(str1);
- 3a4:	80 e7       	ldi	r24, 0x70	; 112
- 3a6:	90 e0       	ldi	r25, 0x00	; 0
- 3a8:	0e 94 bd 01 	call	0x37a	; 0x37a <LCD_WRITE_STRING>
+ 3a6:	80 e7       	ldi	r24, 0x70	; 112
+ 3a8:	90 e0       	ldi	r25, 0x00	; 0
+ 3aa:	0e 94 be 01 	call	0x37c	; 0x37c <LCD_WRITE_STRING>
 	 LCD_GOTO_XY(1, 3);
- 3ac:	63 e0       	ldi	r22, 0x03	; 3
- 3ae:	81 e0       	ldi	r24, 0x01	; 1
- 3b0:	0e 94 6f 01 	call	0x2de	; 0x2de <LCD_GOTO_XY>
+ 3ae:	63 e0       	ldi	r22, 0x03	; 3
+ 3b0:	81 e0       	ldi	r24, 0x01	; 1
+ 3b2:	0e 94 70 01 	call	0x2e0	; 0x2e0 <LCD_GOTO_XY>
 	 LCD_WRITE_STRING(str2);
- 3b4:	8e e7       	ldi	r24, 0x7E	; 126
- 3b6:	90 e0       	ldi	r25, 0x00	; 0
- 3b8:	0e 94 bd 01 	call	0x37a	; 0x37a <LCD_WRITE_STRING>
- 3bc:	2f e7       	ldi	r18, 0x7F	; 127
- 3be:	8a e1       	ldi	r24, 0x1A	; 26
- 3c0:	96 e0       	ldi	r25, 0x06	; 6
- 3c2:	21 50       	subi	r18, 0x01	; 1
- 3c4:	80 40       	sbci	r24, 0x00	; 0
- 3c6:	90 40       	sbci	r25, 0x00	; 0
- 3c8:	e1 f7       	brne	.-8      	; 0x3c2 <main+0x2e>
- 3ca:	00 c0       	rjmp	.+0      	; 0x3cc <main+0x38>
- 3cc:	00 00       	nop
+ 3b6:	8e e7       	ldi	r24, 0x7E	; 126
+ 3b8:	90 e0       	ldi	r25, 0x00	; 0
+ 3ba:	0e 94 be 01 	call	0x37c	; 0x37c <LCD_WRITE_STRING>
+ 3be:	2f e7       	ldi	r18, 0x7F	; 127
+ 3c0:	8a e1       	ldi	r24, 0x1A	; 26
+ 3c2:	96 e0       	ldi	r25, 0x06	; 6
+ 3c4:	21 50       	subi	r18, 0x01	; 1
+ 3c6:	80 40       	sbci	r24, 0x00	; 0
+ 3c8:	90 40       	sbci	r25, 0x00	; 0
+ 3ca:	e1 f7       	brne	.-8      	; 0x3c4 <main+0x2e>
+ 3cc:	00 c0       	rjmp	.+0      	; 0x3ce <main+0x38>
+ 3ce:	00 00       	nop
 	 _delay_ms(2000);
 	 LCD_Clear_Screen();
- 3ce:	0e 94 4a 01 	call	0x294	; 0x294 <LCD_Clear_Screen>
+ 3d0:	0e 94 4b 01 	call	0x296	; 0x296 <LCD_Clear_Screen>
 	 
     while (1) 
     {
 		unsigned char key_pressed = Keypad_GetKey();
- 3d2:	0e 94 52 00 	call	0xa4	; 0xa4 <Keypad_GetKey>
+ 3d4:	0e 94 52 00 	call	0xa4	; 0xa4 <Keypad_GetKey>
 		
 		switch(key_pressed)
- 3d6:	81 32       	cpi	r24, 0x21	; 33
- 3d8:	29 f0       	breq	.+10     	; 0x3e4 <main+0x50>
- 3da:	8e 34       	cpi	r24, 0x4E	; 78
- 3dc:	d1 f3       	breq	.-12     	; 0x3d2 <main+0x3e>
+ 3d8:	81 32       	cpi	r24, 0x21	; 33
+ 3da:	29 f0       	breq	.+10     	; 0x3e6 <main+0x50>
+ 3dc:	8e 34       	cpi	r24, 0x4E	; 78
+ 3de:	d1 f3       	breq	.-12     	; 0x3d4 <main+0x3e>
 		{
 		default:
 			LCD_WRITE_CHAR(key_pressed);
- 3de:	0e 94 ac 01 	call	0x358	; 0x358 <LCD_WRITE_CHAR>
+ 3e0:	0e 94 ad 01 	call	0x35a	; 0x35a <LCD_WRITE_CHAR>
 			break;			
- 3e2:	f7 cf       	rjmp	.-18     	; 0x3d2 <main+0x3e>
+ 3e4:	f7 cf       	rjmp	.-18     	; 0x3d4 <main+0x3e>
 		case '!':
 			LCD_Clear_Screen();
- 3e4:	0e 94 4a 01 	call	0x294	; 0x294 <LCD_Clear_Screen>
+ 3e6:	0e 94 4b 01 	call	0x296	; 0x296 <LCD_Clear_Screen>
 			break;
- 3e8:	f4 cf       	rjmp	.-24     	; 0x3d2 <main+0x3e>
+ 3ea:	f4 cf       	rjmp	.-24     	; 0x3d4 <main+0x3e>
 
-000003ea <_exit>:
- 3ea:	f8 94       	cli
+000003ec <_exit>:
+ 3ec:	f8 94       	cli
 
-000003ec <__stop_program>:
- 3ec:	ff cf       	rjmp	.-2      	; 0x3ec <__stop_program>
+000003ee <__stop_program>:
+ 3ee:	ff cf       	rjmp	.-2      	; 0x3ee <__stop_program>

@@ -51,7 +51,7 @@ void LCD_WRITE_COMMAND(unsigned char command)
 	       LCD_PORT = (LCD_PORT & 0x0F) | (command & 0xF0);   // Higher Nibble
 	       LCD_CTRL &= ~((1 << RS_SWITCH) | (1<<RW_SWITCH));
 	       LCD_Kick();
-	       LCD_PORT = (LCD_PORT & 0x0F) | (command & 0xF0);   // Lower Nibble
+	       LCD_PORT = (LCD_PORT & 0x0F) | (command << 4);   // Lower Nibble
 	       LCD_CTRL &= ~((1 << RS_SWITCH) | (1<<RW_SWITCH));
 	       LCD_Kick();		   	       
 	#endif	
@@ -69,10 +69,12 @@ void LCD_WRITE_CHAR(unsigned char character)
 	#endif
 	#ifdef FOUR_BIT_MODE
 	       LCD_PORT = (LCD_PORT & 0x0F) | (character & 0xF0);   // Higher Nibble
-	       LCD_CTRL &= ~((1 << RS_SWITCH) | (1<<RW_SWITCH));
+		   LCD_CTRL &= ~(1 << RW_SWITCH);
+		   LCD_CTRL |= (1 << RS_SWITCH);
 	       LCD_Kick();
-	       LCD_PORT = (LCD_PORT & 0x0F) | (character & 0xF0);   // Lower Nibble
-	       LCD_CTRL &= ~((1 << RS_SWITCH) | (1<<RW_SWITCH));
+	       LCD_PORT = (LCD_PORT & 0x0F) | (character << 4);   // Lower Nibble
+		   LCD_CTRL &= ~(1 << RW_SWITCH);
+		   LCD_CTRL |= (1 << RS_SWITCH);
 	       LCD_Kick();	
 	#endif	
 	
@@ -87,16 +89,19 @@ void LCD_WRITE_STRING(char* string)
 
 void LCD_isbusy(void)
 {
-	LCD_PORT_DataDir &= ~(0xFF);             // Make 7th bit of LCD data port as input
+	LCD_PORT_DataDir &= ~(1<<7);             // Make 7th bit of LCD data port as input
 	LCD_CTRL |=  (1<<RW_SWITCH);     // Read Mode
 	LCD_CTRL &= ~(1<<RS_SWITCH);     // Select command register
 	
 //	while( (PINB>>7) & 1 )                   //read 7th bit again and again till it becomes 0
 	{
 		LCD_Kick();
+		#ifdef FOUR_BIT_MODE
+			   LCD_Kick();
+		#endif		
 	}                              
 	
-	LCD_PORT_DataDir |= (0xFF);              // Make 7th bit of LCD data port as output
+	LCD_PORT_DataDir |= (1<<7);              // Make 7th bit of LCD data port as output
 	LCD_CTRL &= ~(1<<RW_SWITCH);     // Write Mode	
 }
 

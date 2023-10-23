@@ -1,0 +1,14 @@
+/*
+ * sevensegment.c
+ *
+ *  Created on: Oct 22, 2023
+ *      Author: Abdelaziz Maher
+ */
+
+
+#include "sevensegment.h"
+
+void SevSegment_Init(void)
+{
+
+}

@@ -76,7 +76,7 @@
 #define AFIO_BASE									(0x40010000UL)
 
 //EXTI
-#define EXTI_BASE									(0x4000400UL)
+#define EXTI_BASE									(0x40010400UL)
 
 //USART1
 #define USART1_BASE									(0x40013800UL)
