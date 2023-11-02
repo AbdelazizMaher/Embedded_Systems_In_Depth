@@ -14,18 +14,22 @@
 
 int main(void)
 {
-   DDRA = 0xFF;
-   
+
+ 	//3 Leds as output
+ 	SET_BIT(DDRD,5);
+ 	SET_BIT(DDRD,6);
+ 	SET_BIT(DDRD,7);
+	   
     while (1) 
     {
-		for(int i = 0 ; i < 8 ; i++)
+		for(int i = 5 ; i < 8 ; i++)
 		{
-			SET_BIT(PORTA , i);
+			SET_BIT(PORTD , i);
 			_delay_ms(500);
 		}
-		for(int i = 7 ; i >= 0 ; i--)
+		for(int i = 7 ; i >= 5 ; i--)
 		{
-			RESET_BIT(PORTA , i);
+			RESET_BIT(PORTD , i);
 			_delay_ms(500);
 		}		
     }

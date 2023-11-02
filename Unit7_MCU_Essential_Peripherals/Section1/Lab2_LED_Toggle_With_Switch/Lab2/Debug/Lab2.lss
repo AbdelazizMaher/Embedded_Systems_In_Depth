@@ -3,29 +3,29 @@ Lab2.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         000000b4  00000000  00000000  00000054  2**1
+  0 .text         00000126  00000000  00000000  00000054  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .data         00000000  00800060  00800060  00000108  2**0
+  1 .data         00000000  00800060  00800060  0000017a  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  2 .comment      00000030  00000000  00000000  00000108  2**0
+  2 .comment      00000030  00000000  00000000  0000017a  2**0
                   CONTENTS, READONLY
-  3 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  00000138  2**2
+  3 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  000001ac  2**2
                   CONTENTS, READONLY
-  4 .debug_aranges 00000020  00000000  00000000  00000174  2**0
+  4 .debug_aranges 00000020  00000000  00000000  000001e8  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_info   000005f1  00000000  00000000  00000194  2**0
+  5 .debug_info   00000656  00000000  00000000  00000208  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_abbrev 0000056e  00000000  00000000  00000785  2**0
+  6 .debug_abbrev 00000570  00000000  00000000  0000085e  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_line   00000253  00000000  00000000  00000cf3  2**0
+  7 .debug_line   000002bf  00000000  00000000  00000dce  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_frame  00000024  00000000  00000000  00000f48  2**2
+  8 .debug_frame  00000024  00000000  00000000  00001090  2**2
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    0000033f  00000000  00000000  00000f6c  2**0
+  9 .debug_str    00000356  00000000  00000000  000010b4  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_loc    0000006c  00000000  00000000  000012ab  2**0
+ 10 .debug_loc    000000d8  00000000  00000000  0000140a  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_ranges 00000010  00000000  00000000  00001317  2**0
+ 11 .debug_ranges 00000010  00000000  00000000  000014e2  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -61,78 +61,151 @@ Disassembly of section .text:
   5c:	de bf       	out	0x3e, r29	; 62
   5e:	cd bf       	out	0x3d, r28	; 61
   60:	0e 94 36 00 	call	0x6c	; 0x6c <main>
-  64:	0c 94 58 00 	jmp	0xb0	; 0xb0 <_exit>
+  64:	0c 94 91 00 	jmp	0x122	; 0x122 <_exit>
 
 00000068 <__bad_interrupt>:
   68:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
 
 0000006c <main>:
-
-int main(void)
-{
-	int i = 0;
-	
-	DDRA = 0xFF;  // PORTA (output-leds)
-  6c:	8f ef       	ldi	r24, 0xFF	; 255
-  6e:	8a bb       	out	0x1a, r24	; 26
-    RESET_BIT(DDRC,0);  // PIN 0 - PORTC (input-button)
-  70:	84 b3       	in	r24, 0x14	; 20
-  72:	8e 7f       	andi	r24, 0xFE	; 254
-  74:	84 bb       	out	0x14, r24	; 20
 #include <util/delay.h>
 
 
 int main(void)
 {
-	int i = 0;
-  76:	80 e0       	ldi	r24, 0x00	; 0
-  78:	90 e0       	ldi	r25, 0x00	; 0
-	DDRA = 0xFF;  // PORTA (output-leds)
-    RESET_BIT(DDRC,0);  // PIN 0 - PORTC (input-button)
-	
+	RESET_BIT(DDRD,0); // PushButton 0 as input
+  6c:	81 b3       	in	r24, 0x11	; 17
+  6e:	8e 7f       	andi	r24, 0xFE	; 254
+  70:	81 bb       	out	0x11, r24	; 17
+	RESET_BIT(DDRD,1); // PushButton 1 as input
+  72:	81 b3       	in	r24, 0x11	; 17
+  74:	8d 7f       	andi	r24, 0xFD	; 253
+  76:	81 bb       	out	0x11, r24	; 17
+	RESET_BIT(DDRD,2); // PushButton 2 as input
+  78:	81 b3       	in	r24, 0x11	; 17
+  7a:	8b 7f       	andi	r24, 0xFB	; 251
+  7c:	81 bb       	out	0x11, r24	; 17
+	SET_BIT(DDRD,4); //Buzzer as Output push/pull
+  7e:	81 b3       	in	r24, 0x11	; 17
+  80:	80 61       	ori	r24, 0x10	; 16
+  82:	81 bb       	out	0x11, r24	; 17
+	//3 Leds as output
+	SET_BIT(DDRD,5);
+  84:	81 b3       	in	r24, 0x11	; 17
+  86:	80 62       	ori	r24, 0x20	; 32
+  88:	81 bb       	out	0x11, r24	; 17
+	SET_BIT(DDRD,6);
+  8a:	81 b3       	in	r24, 0x11	; 17
+  8c:	80 64       	ori	r24, 0x40	; 64
+  8e:	81 bb       	out	0x11, r24	; 17
+	SET_BIT(DDRD,7);
+  90:	81 b3       	in	r24, 0x11	; 17
+  92:	80 68       	ori	r24, 0x80	; 128
+  94:	81 bb       	out	0x11, r24	; 17
+		
     while (1) 
     {
-		if( READ_BIT(PINC , 0) == 1 &&  i<8 )
-  7a:	98 9b       	sbis	0x13, 0	; 19
-  7c:	fe cf       	rjmp	.-4      	; 0x7a <main+0xe>
-  7e:	88 30       	cpi	r24, 0x08	; 8
-  80:	91 05       	cpc	r25, r1
-  82:	dc f7       	brge	.-10     	; 0x7a <main+0xe>
+		if( READ_BIT(PIND , 0) == 1 )
+  96:	80 9b       	sbis	0x10, 0	; 16
+  98:	15 c0       	rjmp	.+42     	; 0xc4 <main+0x58>
 		{
-			SET_BIT(PORTA, i);
-  84:	4b b3       	in	r20, 0x1b	; 27
-  86:	21 e0       	ldi	r18, 0x01	; 1
-  88:	30 e0       	ldi	r19, 0x00	; 0
-  8a:	08 2e       	mov	r0, r24
-  8c:	02 c0       	rjmp	.+4      	; 0x92 <main+0x26>
-  8e:	22 0f       	add	r18, r18
-  90:	33 1f       	adc	r19, r19
-  92:	0a 94       	dec	r0
-  94:	e2 f7       	brpl	.-8      	; 0x8e <main+0x22>
-  96:	24 2b       	or	r18, r20
-  98:	2b bb       	out	0x1b, r18	; 27
+			SET_BIT(PORTD,4);
+  9a:	82 b3       	in	r24, 0x12	; 18
+  9c:	80 61       	ori	r24, 0x10	; 16
+  9e:	82 bb       	out	0x12, r24	; 18
+			SET_BIT(PORTD,5);
+  a0:	82 b3       	in	r24, 0x12	; 18
+  a2:	80 62       	ori	r24, 0x20	; 32
+  a4:	82 bb       	out	0x12, r24	; 18
 	#else
 		//round up by default
 		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
 	#endif
 
 	__builtin_avr_delay_cycles(__ticks_dc);
-  9a:	2f ef       	ldi	r18, 0xFF	; 255
-  9c:	34 e3       	ldi	r19, 0x34	; 52
-  9e:	4c e0       	ldi	r20, 0x0C	; 12
-  a0:	21 50       	subi	r18, 0x01	; 1
-  a2:	30 40       	sbci	r19, 0x00	; 0
-  a4:	40 40       	sbci	r20, 0x00	; 0
-  a6:	e1 f7       	brne	.-8      	; 0xa0 <main+0x34>
-  a8:	00 c0       	rjmp	.+0      	; 0xaa <main+0x3e>
-  aa:	00 00       	nop
+  a6:	2f ef       	ldi	r18, 0xFF	; 255
+  a8:	84 e3       	ldi	r24, 0x34	; 52
+  aa:	9c e0       	ldi	r25, 0x0C	; 12
+  ac:	21 50       	subi	r18, 0x01	; 1
+  ae:	80 40       	sbci	r24, 0x00	; 0
+  b0:	90 40       	sbci	r25, 0x00	; 0
+  b2:	e1 f7       	brne	.-8      	; 0xac <main+0x40>
+  b4:	00 c0       	rjmp	.+0      	; 0xb6 <main+0x4a>
+  b6:	00 00       	nop
 			_delay_ms(500);
-			i++;
-  ac:	01 96       	adiw	r24, 0x01	; 1
-  ae:	e5 cf       	rjmp	.-54     	; 0x7a <main+0xe>
+			RESET_BIT(PORTD,4);
+  b8:	82 b3       	in	r24, 0x12	; 18
+  ba:	8f 7e       	andi	r24, 0xEF	; 239
+  bc:	82 bb       	out	0x12, r24	; 18
+			RESET_BIT(PORTD,5);
+  be:	82 b3       	in	r24, 0x12	; 18
+  c0:	8f 7d       	andi	r24, 0xDF	; 223
+  c2:	82 bb       	out	0x12, r24	; 18
+		}
+		if( READ_BIT(PIND , 1) == 1 )
+  c4:	81 9b       	sbis	0x10, 1	; 16
+  c6:	15 c0       	rjmp	.+42     	; 0xf2 <main+0x86>
+		{
+			SET_BIT(PORTD,4);
+  c8:	82 b3       	in	r24, 0x12	; 18
+  ca:	80 61       	ori	r24, 0x10	; 16
+  cc:	82 bb       	out	0x12, r24	; 18
+			SET_BIT(PORTD,6);
+  ce:	82 b3       	in	r24, 0x12	; 18
+  d0:	80 64       	ori	r24, 0x40	; 64
+  d2:	82 bb       	out	0x12, r24	; 18
+  d4:	2f ef       	ldi	r18, 0xFF	; 255
+  d6:	84 e3       	ldi	r24, 0x34	; 52
+  d8:	9c e0       	ldi	r25, 0x0C	; 12
+  da:	21 50       	subi	r18, 0x01	; 1
+  dc:	80 40       	sbci	r24, 0x00	; 0
+  de:	90 40       	sbci	r25, 0x00	; 0
+  e0:	e1 f7       	brne	.-8      	; 0xda <main+0x6e>
+  e2:	00 c0       	rjmp	.+0      	; 0xe4 <main+0x78>
+  e4:	00 00       	nop
+			_delay_ms(500);
+			RESET_BIT(PORTD,4);
+  e6:	82 b3       	in	r24, 0x12	; 18
+  e8:	8f 7e       	andi	r24, 0xEF	; 239
+  ea:	82 bb       	out	0x12, r24	; 18
+			RESET_BIT(PORTD,6);
+  ec:	82 b3       	in	r24, 0x12	; 18
+  ee:	8f 7b       	andi	r24, 0xBF	; 191
+  f0:	82 bb       	out	0x12, r24	; 18
+		}
+		if( READ_BIT(PIND , 2) == 1 )
+  f2:	82 9b       	sbis	0x10, 2	; 16
+  f4:	d0 cf       	rjmp	.-96     	; 0x96 <main+0x2a>
+		{
+			SET_BIT(PORTD,4);
+  f6:	82 b3       	in	r24, 0x12	; 18
+  f8:	80 61       	ori	r24, 0x10	; 16
+  fa:	82 bb       	out	0x12, r24	; 18
+			SET_BIT(PORTD,7);
+  fc:	82 b3       	in	r24, 0x12	; 18
+  fe:	80 68       	ori	r24, 0x80	; 128
+ 100:	82 bb       	out	0x12, r24	; 18
+ 102:	2f ef       	ldi	r18, 0xFF	; 255
+ 104:	84 e3       	ldi	r24, 0x34	; 52
+ 106:	9c e0       	ldi	r25, 0x0C	; 12
+ 108:	21 50       	subi	r18, 0x01	; 1
+ 10a:	80 40       	sbci	r24, 0x00	; 0
+ 10c:	90 40       	sbci	r25, 0x00	; 0
+ 10e:	e1 f7       	brne	.-8      	; 0x108 <main+0x9c>
+ 110:	00 c0       	rjmp	.+0      	; 0x112 <main+0xa6>
+ 112:	00 00       	nop
+			_delay_ms(500);
+			RESET_BIT(PORTD,4);
+ 114:	82 b3       	in	r24, 0x12	; 18
+ 116:	8f 7e       	andi	r24, 0xEF	; 239
+ 118:	82 bb       	out	0x12, r24	; 18
+			RESET_BIT(PORTD,7);
+ 11a:	82 b3       	in	r24, 0x12	; 18
+ 11c:	8f 77       	andi	r24, 0x7F	; 127
+ 11e:	82 bb       	out	0x12, r24	; 18
+ 120:	ba cf       	rjmp	.-140    	; 0x96 <main+0x2a>
 
-000000b0 <_exit>:
-  b0:	f8 94       	cli
+00000122 <_exit>:
+ 122:	f8 94       	cli
 
-000000b2 <__stop_program>:
-  b2:	ff cf       	rjmp	.-2      	; 0xb2 <__stop_program>
+00000124 <__stop_program>:
+ 124:	ff cf       	rjmp	.-2      	; 0x124 <__stop_program>

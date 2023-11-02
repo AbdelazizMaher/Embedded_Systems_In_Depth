@@ -3,29 +3,29 @@ Lab1.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         000000e6  00000000  00000000  00000054  2**1
+  0 .text         000000f6  00000000  00000000  00000054  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .data         00000000  00800060  00800060  0000013a  2**0
+  1 .data         00000000  00800060  00800060  0000014a  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  2 .comment      00000030  00000000  00000000  0000013a  2**0
+  2 .comment      00000030  00000000  00000000  0000014a  2**0
                   CONTENTS, READONLY
-  3 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  0000016c  2**2
+  3 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  0000017c  2**2
                   CONTENTS, READONLY
-  4 .debug_aranges 00000020  00000000  00000000  000001a8  2**0
+  4 .debug_aranges 00000020  00000000  00000000  000001b8  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_info   0000064e  00000000  00000000  000001c8  2**0
+  5 .debug_info   0000064e  00000000  00000000  000001d8  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_abbrev 00000588  00000000  00000000  00000816  2**0
+  6 .debug_abbrev 00000588  00000000  00000000  00000826  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_line   00000282  00000000  00000000  00000d9e  2**0
+  7 .debug_line   0000028e  00000000  00000000  00000dae  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_frame  00000024  00000000  00000000  00001020  2**2
+  8 .debug_frame  00000024  00000000  00000000  0000103c  2**2
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    0000033f  00000000  00000000  00001044  2**0
+  9 .debug_str    0000034a  00000000  00000000  00001060  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_loc    000000b4  00000000  00000000  00001383  2**0
+ 10 .debug_loc    000000b4  00000000  00000000  000013aa  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_ranges 00000010  00000000  00000000  00001437  2**0
+ 11 .debug_ranges 00000010  00000000  00000000  0000145e  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -61,110 +61,120 @@ Disassembly of section .text:
   5c:	de bf       	out	0x3e, r29	; 62
   5e:	cd bf       	out	0x3d, r28	; 61
   60:	0e 94 36 00 	call	0x6c	; 0x6c <main>
-  64:	0c 94 71 00 	jmp	0xe2	; 0xe2 <_exit>
+  64:	0c 94 79 00 	jmp	0xf2	; 0xf2 <_exit>
 
 00000068 <__bad_interrupt>:
   68:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
 
 0000006c <main>:
-#include <util/delay.h>
-
 
 int main(void)
 {
-   DDRA = 0xFF;
-  6c:	8f ef       	ldi	r24, 0xFF	; 255
-  6e:	8a bb       	out	0x1a, r24	; 26
-   
+
+ 	//3 Leds as output
+ 	SET_BIT(DDRD,5);
+  6c:	81 b3       	in	r24, 0x11	; 17
+  6e:	80 62       	ori	r24, 0x20	; 32
+  70:	81 bb       	out	0x11, r24	; 17
+ 	SET_BIT(DDRD,6);
+  72:	81 b3       	in	r24, 0x11	; 17
+  74:	80 64       	ori	r24, 0x40	; 64
+  76:	81 bb       	out	0x11, r24	; 17
+ 	SET_BIT(DDRD,7);
+  78:	81 b3       	in	r24, 0x11	; 17
+  7a:	80 68       	ori	r24, 0x80	; 128
+  7c:	81 bb       	out	0x11, r24	; 17
+	   
     while (1) 
     {
-		for(int i = 0 ; i < 8 ; i++)
-  70:	20 e0       	ldi	r18, 0x00	; 0
-  72:	30 e0       	ldi	r19, 0x00	; 0
-  74:	16 c0       	rjmp	.+44     	; 0xa2 <main+0x36>
+		for(int i = 5 ; i < 8 ; i++)
+  7e:	25 e0       	ldi	r18, 0x05	; 5
+  80:	30 e0       	ldi	r19, 0x00	; 0
+  82:	16 c0       	rjmp	.+44     	; 0xb0 <main+0x44>
 		{
-			SET_BIT(PORTA , i);
-  76:	4b b3       	in	r20, 0x1b	; 27
-  78:	81 e0       	ldi	r24, 0x01	; 1
-  7a:	90 e0       	ldi	r25, 0x00	; 0
-  7c:	02 2e       	mov	r0, r18
-  7e:	02 c0       	rjmp	.+4      	; 0x84 <main+0x18>
-  80:	88 0f       	add	r24, r24
-  82:	99 1f       	adc	r25, r25
-  84:	0a 94       	dec	r0
-  86:	e2 f7       	brpl	.-8      	; 0x80 <main+0x14>
-  88:	84 2b       	or	r24, r20
-  8a:	8b bb       	out	0x1b, r24	; 27
+			SET_BIT(PORTD , i);
+  84:	42 b3       	in	r20, 0x12	; 18
+  86:	81 e0       	ldi	r24, 0x01	; 1
+  88:	90 e0       	ldi	r25, 0x00	; 0
+  8a:	02 2e       	mov	r0, r18
+  8c:	02 c0       	rjmp	.+4      	; 0x92 <main+0x26>
+  8e:	88 0f       	add	r24, r24
+  90:	99 1f       	adc	r25, r25
+  92:	0a 94       	dec	r0
+  94:	e2 f7       	brpl	.-8      	; 0x8e <main+0x22>
+  96:	84 2b       	or	r24, r20
+  98:	82 bb       	out	0x12, r24	; 18
 	#else
 		//round up by default
 		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
 	#endif
 
 	__builtin_avr_delay_cycles(__ticks_dc);
-  8c:	4f ef       	ldi	r20, 0xFF	; 255
-  8e:	84 e3       	ldi	r24, 0x34	; 52
-  90:	9c e0       	ldi	r25, 0x0C	; 12
-  92:	41 50       	subi	r20, 0x01	; 1
-  94:	80 40       	sbci	r24, 0x00	; 0
-  96:	90 40       	sbci	r25, 0x00	; 0
-  98:	e1 f7       	brne	.-8      	; 0x92 <main+0x26>
-  9a:	00 c0       	rjmp	.+0      	; 0x9c <main+0x30>
-  9c:	00 00       	nop
-{
-   DDRA = 0xFF;
-   
+  9a:	4f ef       	ldi	r20, 0xFF	; 255
+  9c:	84 e3       	ldi	r24, 0x34	; 52
+  9e:	9c e0       	ldi	r25, 0x0C	; 12
+  a0:	41 50       	subi	r20, 0x01	; 1
+  a2:	80 40       	sbci	r24, 0x00	; 0
+  a4:	90 40       	sbci	r25, 0x00	; 0
+  a6:	e1 f7       	brne	.-8      	; 0xa0 <main+0x34>
+  a8:	00 c0       	rjmp	.+0      	; 0xaa <main+0x3e>
+  aa:	00 00       	nop
+ 	SET_BIT(DDRD,6);
+ 	SET_BIT(DDRD,7);
+	   
     while (1) 
     {
-		for(int i = 0 ; i < 8 ; i++)
-  9e:	2f 5f       	subi	r18, 0xFF	; 255
-  a0:	3f 4f       	sbci	r19, 0xFF	; 255
-  a2:	28 30       	cpi	r18, 0x08	; 8
-  a4:	31 05       	cpc	r19, r1
-  a6:	3c f3       	brlt	.-50     	; 0x76 <main+0xa>
-  a8:	27 e0       	ldi	r18, 0x07	; 7
-  aa:	30 e0       	ldi	r19, 0x00	; 0
-  ac:	17 c0       	rjmp	.+46     	; 0xdc <main+0x70>
-			SET_BIT(PORTA , i);
+		for(int i = 5 ; i < 8 ; i++)
+  ac:	2f 5f       	subi	r18, 0xFF	; 255
+  ae:	3f 4f       	sbci	r19, 0xFF	; 255
+  b0:	28 30       	cpi	r18, 0x08	; 8
+  b2:	31 05       	cpc	r19, r1
+  b4:	3c f3       	brlt	.-50     	; 0x84 <main+0x18>
+  b6:	27 e0       	ldi	r18, 0x07	; 7
+  b8:	30 e0       	ldi	r19, 0x00	; 0
+  ba:	17 c0       	rjmp	.+46     	; 0xea <main+0x7e>
+			SET_BIT(PORTD , i);
 			_delay_ms(500);
 		}
-		for(int i = 7 ; i >= 0 ; i--)
+		for(int i = 7 ; i >= 5 ; i--)
 		{
-			RESET_BIT(PORTA , i);
-  ae:	4b b3       	in	r20, 0x1b	; 27
-  b0:	81 e0       	ldi	r24, 0x01	; 1
-  b2:	90 e0       	ldi	r25, 0x00	; 0
-  b4:	02 2e       	mov	r0, r18
-  b6:	02 c0       	rjmp	.+4      	; 0xbc <main+0x50>
-  b8:	88 0f       	add	r24, r24
-  ba:	99 1f       	adc	r25, r25
-  bc:	0a 94       	dec	r0
-  be:	e2 f7       	brpl	.-8      	; 0xb8 <main+0x4c>
-  c0:	80 95       	com	r24
-  c2:	84 23       	and	r24, r20
-  c4:	8b bb       	out	0x1b, r24	; 27
-  c6:	4f ef       	ldi	r20, 0xFF	; 255
-  c8:	84 e3       	ldi	r24, 0x34	; 52
-  ca:	9c e0       	ldi	r25, 0x0C	; 12
-  cc:	41 50       	subi	r20, 0x01	; 1
-  ce:	80 40       	sbci	r24, 0x00	; 0
-  d0:	90 40       	sbci	r25, 0x00	; 0
-  d2:	e1 f7       	brne	.-8      	; 0xcc <main+0x60>
-  d4:	00 c0       	rjmp	.+0      	; 0xd6 <main+0x6a>
-  d6:	00 00       	nop
-		for(int i = 0 ; i < 8 ; i++)
+			RESET_BIT(PORTD , i);
+  bc:	42 b3       	in	r20, 0x12	; 18
+  be:	81 e0       	ldi	r24, 0x01	; 1
+  c0:	90 e0       	ldi	r25, 0x00	; 0
+  c2:	02 2e       	mov	r0, r18
+  c4:	02 c0       	rjmp	.+4      	; 0xca <main+0x5e>
+  c6:	88 0f       	add	r24, r24
+  c8:	99 1f       	adc	r25, r25
+  ca:	0a 94       	dec	r0
+  cc:	e2 f7       	brpl	.-8      	; 0xc6 <main+0x5a>
+  ce:	80 95       	com	r24
+  d0:	84 23       	and	r24, r20
+  d2:	82 bb       	out	0x12, r24	; 18
+  d4:	4f ef       	ldi	r20, 0xFF	; 255
+  d6:	84 e3       	ldi	r24, 0x34	; 52
+  d8:	9c e0       	ldi	r25, 0x0C	; 12
+  da:	41 50       	subi	r20, 0x01	; 1
+  dc:	80 40       	sbci	r24, 0x00	; 0
+  de:	90 40       	sbci	r25, 0x00	; 0
+  e0:	e1 f7       	brne	.-8      	; 0xda <main+0x6e>
+  e2:	00 c0       	rjmp	.+0      	; 0xe4 <main+0x78>
+  e4:	00 00       	nop
+		for(int i = 5 ; i < 8 ; i++)
 		{
-			SET_BIT(PORTA , i);
+			SET_BIT(PORTD , i);
 			_delay_ms(500);
 		}
-		for(int i = 7 ; i >= 0 ; i--)
-  d8:	21 50       	subi	r18, 0x01	; 1
-  da:	31 09       	sbc	r19, r1
-  dc:	33 23       	and	r19, r19
-  de:	3c f7       	brge	.-50     	; 0xae <main+0x42>
-  e0:	c7 cf       	rjmp	.-114    	; 0x70 <main+0x4>
+		for(int i = 7 ; i >= 5 ; i--)
+  e6:	21 50       	subi	r18, 0x01	; 1
+  e8:	31 09       	sbc	r19, r1
+  ea:	25 30       	cpi	r18, 0x05	; 5
+  ec:	31 05       	cpc	r19, r1
+  ee:	34 f7       	brge	.-52     	; 0xbc <main+0x50>
+  f0:	c6 cf       	rjmp	.-116    	; 0x7e <main+0x12>
 
-000000e2 <_exit>:
-  e2:	f8 94       	cli
+000000f2 <_exit>:
+  f2:	f8 94       	cli
 
-000000e4 <__stop_program>:
-  e4:	ff cf       	rjmp	.-2      	; 0xe4 <__stop_program>
+000000f4 <__stop_program>:
+  f4:	ff cf       	rjmp	.-2      	; 0xf4 <__stop_program>
