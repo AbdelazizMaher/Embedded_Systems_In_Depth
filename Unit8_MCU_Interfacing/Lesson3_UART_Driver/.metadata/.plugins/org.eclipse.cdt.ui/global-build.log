@@ -1,14 +1,7 @@
-12:08:17 **** Incremental Build of configuration Debug for project STM32F103C6 ****
+14:57:51 **** Incremental Build of configuration Debug for project STM32F103C6 ****
 make -j16 all 
-arm-none-eabi-gcc -gdwarf-2 "../MCAL/Src/Stm32f103c6_USART_Driver.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DSTM32 -DSTM32F1 -DSTM32F103C6Tx -c -I"C:/Users/Abdel/OneDrive/Documents/EmbeddedSystemsInDepth/Drivers/Stm32f103xx/STM32F103C6/MCAL/Inc" -I../Inc -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"MCAL/Src/Stm32f103c6_USART_Driver.d" -MT"MCAL/Src/Stm32f103c6_USART_Driver.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "MCAL/Src/Stm32f103c6_USART_Driver.o"
-arm-none-eabi-gcc -gdwarf-2 -o "STM32F103C6.elf" @"objects.list"   -mcpu=cortex-m3 -T"C:\Users\Abdel\OneDrive\Documents\EmbeddedSystemsInDepth\Drivers\Stm32f103xx\STM32F103C6\STM32F103C6TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="STM32F103C6.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
-Finished building target: STM32F103C6.elf
- 
 arm-none-eabi-size   STM32F103C6.elf 
-arm-none-eabi-objdump -h -S  STM32F103C6.elf  > "STM32F103C6.list"
    text	   data	    bss	    dec	    hex	filename
-   2528	      8	   1640	   4176	   1050	STM32F103C6.elf
+   3476	      8	   1728	   5212	   145c	STM32F103C6.elf
 Finished building: default.size.stdout
- 
-Finished building: STM32F103C6.list
  

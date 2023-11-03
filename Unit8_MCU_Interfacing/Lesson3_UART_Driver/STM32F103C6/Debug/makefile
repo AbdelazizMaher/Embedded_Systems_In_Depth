@@ -12,6 +12,9 @@ RM := rm -rf
 -include Startup/subdir.mk
 -include Src/subdir.mk
 -include MCAL/Src/subdir.mk
+-include HAL/SevenSegment/subdir.mk
+-include HAL/LCD/subdir.mk
+-include HAL/KeyPad/subdir.mk
 -include objects.mk
 
 ifneq ($(MAKECMDGOALS),clean)

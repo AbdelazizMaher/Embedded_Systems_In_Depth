@@ -331,7 +331,7 @@ void MCAL_UART_SendData(USART_TypeDef * USARTx , uint16_t * pTXBuffer , enum Pol
 
 	//Wait Until TXE is set in SR
 	if ( PollingEn == ENABLE )
-		while(! ( USARTx->SR & ( 1<<7 ) ) );
+		while(! ( USARTx->SR & ( UART_TXE_FLAG ) ) );
 
 	//Check the data Word length ( 9BIT - 8BIT) Frame
 	//	When transmitting with the parity enabled (PCE bit set to 1 in the USART_CR1 register),
@@ -373,7 +373,7 @@ void MCAL_UART_ReceiveData(USART_TypeDef * USARTx,uint16_t * pRXBuffer , enum Po
 
 	//Wait Until RXNE is set in SR
 	if ( PollingEn == ENABLE )
-		while(! ( USARTx->SR & ( 1<<5 ) ) );
+		while(! ( USARTx->SR & ( UART_RXNE_FLAG ) ) );
 
 	//Check the data Word length ( 9BIT - 8BIT) Frame
 	if( Global_UART_Cfg[index]->PayLoad_Length == UART_PayLoad_Length_9bit )
@@ -417,7 +417,7 @@ void MCAL_UART_ReceiveData(USART_TypeDef * USARTx,uint16_t * pRXBuffer , enum Po
 void MCAL_UART_WAIT_TC (USART_TypeDef * USARTx)
 {
 	//Wait Until TXE is set in SR
-	while(! ( USARTx->SR & ( 1<<6 ) ) );
+	while(! ( USARTx->SR & ( UART_TC_FLAG ) ) );
 }
 
 

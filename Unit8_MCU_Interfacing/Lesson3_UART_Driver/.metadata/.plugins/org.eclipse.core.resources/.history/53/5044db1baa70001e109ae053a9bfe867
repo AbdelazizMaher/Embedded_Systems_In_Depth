@@ -1,0 +1,36 @@
+/*
+ * sevensegment.h
+ *
+ *  Created on: Oct 22, 2023
+ *      Author: Abdelaziz Maher
+ */
+
+#ifndef SEVENSEGMENT_SEVENSEGMENT_H_
+#define SEVENSEGMENT_SEVENSEGMENT_H_
+
+#include "Stm32f103c6_GPIO_Driver.h"
+
+
+#define ZERO	 	0x01
+#define ONE 		0x79
+#define TWO 		0x24
+#define THREE 		0x30
+#define FOUR 		0x4C
+#define FIVE 		0x12
+#define SIX 		0x02
+#define SEVEN 		0x19
+#define EIGHT 		0x00
+#define NINE 		0x10
+
+#define A	 	    0x01
+#define B 			0x79
+#define C 			0x24
+#define D 			0x30
+#define E 			0x4C
+#define F 			0x12
+#define G 			0x02
+
+
+void SevSegment_Init(void);
+
+#endif /* SEVENSEGMENT_SEVENSEGMENT_H_ */
