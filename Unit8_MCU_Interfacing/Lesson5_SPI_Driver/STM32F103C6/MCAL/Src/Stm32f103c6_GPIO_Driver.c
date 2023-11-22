@@ -144,12 +144,12 @@ void MCAL_GPIO_Init(GPIO_TypeDef *GPIOx , GPIO_PinConfig_t *Pin_Config)
 			if ( Pin_Config->GPIO_Mode == GPIO_PIN_MODE_INPUT_PU )
 			{
 				//PxODR = 1 :Table 20. Port bit configuration table
-				GPIOx->ODR |= 1 << Pin_Config->GPIO_PinNumber;
+				GPIOx->ODR |= (Pin_Config->GPIO_PinNumber );
 			}
 			else
 			{
 				//PxODR = 0 :Table 20. Port bit configuration table
-				GPIOx->ODR &= ~(1 << Pin_Config->GPIO_PinNumber);
+				GPIOx->ODR &= ~(Pin_Config->GPIO_PinNumber);
 			}
 		}
 	}

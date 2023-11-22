@@ -1,13 +1,14 @@
-10:17:44 **** Incremental Build of configuration Debug for project STM32F103C6 ****
+21:52:57 **** Incremental Build of configuration Debug for project STM32F103C6 ****
 make -j16 all 
-arm-none-eabi-gcc -gdwarf-2 "../MCAL/Src/Stm32f103c6_SPI_Driver.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DSTM32 -DSTM32F1 -DSTM32F103C6Tx -c -I"C:/Users/Abdel/OneDrive/Documents/EmbeddedSystemsInDepth/Drivers/Stm32f103xx/STM32F103C6/MCAL/Inc" -I../Inc -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"MCAL/Src/Stm32f103c6_SPI_Driver.d" -MT"MCAL/Src/Stm32f103c6_SPI_Driver.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "MCAL/Src/Stm32f103c6_SPI_Driver.o"
+arm-none-eabi-gcc -gdwarf-2 "../Src/05_SPI_Test.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DSTM32 -DSTM32F1 -DSTM32F103C6Tx -c -I"C:/Users/Abdel/OneDrive/Documents/EmbeddedSystemsInDepth/Drivers/Stm32f103xx/STM32F103C6/MCAL/Inc" -I"C:/Users/Abdel/OneDrive/Documents/EmbeddedSystemsInDepth/Drivers/Stm32f103xx/STM32F103C6/HAL/SevenSegment" -I"C:/Users/Abdel/OneDrive/Documents/EmbeddedSystemsInDepth/Drivers/Stm32f103xx/STM32F103C6/HAL/KeyPad" -I"C:/Users/Abdel/OneDrive/Documents/EmbeddedSystemsInDepth/Drivers/Stm32f103xx/STM32F103C6/HAL/LCD" -I../Inc -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Src/05_SPI_Test.d" -MT"Src/05_SPI_Test.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Src/05_SPI_Test.o"
+arm-none-eabi-gcc -gdwarf-2 "../MCAL/Src/Stm32f103c6_SPI_Driver.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DSTM32 -DSTM32F1 -DSTM32F103C6Tx -c -I"C:/Users/Abdel/OneDrive/Documents/EmbeddedSystemsInDepth/Drivers/Stm32f103xx/STM32F103C6/MCAL/Inc" -I"C:/Users/Abdel/OneDrive/Documents/EmbeddedSystemsInDepth/Drivers/Stm32f103xx/STM32F103C6/HAL/SevenSegment" -I"C:/Users/Abdel/OneDrive/Documents/EmbeddedSystemsInDepth/Drivers/Stm32f103xx/STM32F103C6/HAL/KeyPad" -I"C:/Users/Abdel/OneDrive/Documents/EmbeddedSystemsInDepth/Drivers/Stm32f103xx/STM32F103C6/HAL/LCD" -I../Inc -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"MCAL/Src/Stm32f103c6_SPI_Driver.d" -MT"MCAL/Src/Stm32f103c6_SPI_Driver.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "MCAL/Src/Stm32f103c6_SPI_Driver.o"
 arm-none-eabi-gcc -gdwarf-2 -o "STM32F103C6.elf" @"objects.list"   -mcpu=cortex-m3 -T"C:\Users\Abdel\OneDrive\Documents\EmbeddedSystemsInDepth\Drivers\Stm32f103xx\STM32F103C6\STM32F103C6TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="STM32F103C6.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 Finished building target: STM32F103C6.elf
  
 arm-none-eabi-size   STM32F103C6.elf 
 arm-none-eabi-objdump -h -S  STM32F103C6.elf  > "STM32F103C6.list"
    text	   data	    bss	    dec	    hex	filename
-   2704	      8	   1648	   4360	   1108	STM32F103C6.elf
+   4632	      8	   1784	   6424	   1918	STM32F103C6.elf
 Finished building: default.size.stdout
  
 Finished building: STM32F103C6.list

@@ -76,7 +76,7 @@
 #define AFIO_BASE									(0x40010000UL)
 
 //EXTI
-#define EXTI_BASE									(0x4000400UL)
+#define EXTI_BASE									(0x40010400UL)
 
 //USART1
 #define USART1_BASE									(0x40013800UL)
@@ -258,7 +258,7 @@ typedef struct
 #define RCC_USART3_CLK_ENABLE()					( RCC->APB1ENR |= ( 1 << 18 ) )
 
 //SPI
-#define RCC_SPI1_CLK_ENABLE()					( RCC->APB1ENR |= ( 1 << 12 ) )
+#define RCC_SPI1_CLK_ENABLE()					( RCC->APB2ENR |= ( 1 << 12 ) )
 #define RCC_SPI2_CLK_ENABLE()					( RCC->APB1ENR |= ( 1 << 14 ) )
 
 //-*-*-*-*-*-*-*-*-*-*-*-

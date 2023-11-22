@@ -116,7 +116,7 @@ void MCAL_SPI_Init(SPI_TypeDef* SPIx,SPI_Config_t* SPI_Cfg)
 	}
 	else
 	{
-		tempreg_CR2 |=SPI_Cfg->NSS;
+		tempreg_CR1 |=SPI_Cfg->NSS;
 	}
     //======================================================
 
@@ -186,6 +186,26 @@ void MCAL_SPI_GPIO_SetPins(SPI_TypeDef* SPIx)
 			//PA7 : SPI1_MOSI
 			if( Global_SPI_Cfg[SPI1_INDEX]->Device_Mode == SPI_Device_Mode_Master )
 			{
+				//PA4 : SPI1_NSS
+				switch (Global_SPI_Cfg[SPI1_INDEX]->NSS)
+				{
+				// Input
+				case SPI_NSS_Hard_Master_SS_Out_DISABLE:
+					//  Master-Slave Input Floating
+					PinCfg.GPIO_PinNumber = GPIO_PIN_4;
+					PinCfg.GPIO_Mode = GPIO_PIN_MODE_INPUT_FLOA;
+					MCAL_GPIO_Init(GPIOA, &PinCfg);
+					break;
+
+				// Output
+				case SPI_NSS_Hard_Master_SS_Out_ENABLE:
+					// NNS Output Alternate function pp
+					PinCfg.GPIO_PinNumber = GPIO_PIN_4;
+					PinCfg.GPIO_Mode = GPIO_PIN_MODE_ALTFN_OUTPUT_PP;
+					PinCfg.GPIO_Output_Speed = GPIO_PIN_SPEED_10MHZ;
+					MCAL_GPIO_Init(GPIOA, &PinCfg);
+					break;
+				}
 
 				//PA5 : SPI1_SCK
 				//Master AF Push-Pull
@@ -210,6 +230,15 @@ void MCAL_SPI_GPIO_SetPins(SPI_TypeDef* SPIx)
 
 			}else //Slave
 			{
+				//PA4 : SPI1_NSS
+				if(Global_SPI_Cfg[SPI1_INDEX]->NSS == SPI_NSS_Hard_Slave)
+				{
+					/* Hardware Master/Slave Input Floating */
+					PinCfg.GPIO_PinNumber = GPIO_PIN_4;
+					PinCfg.GPIO_Mode = GPIO_PIN_MODE_INPUT_FLOA;
+					MCAL_GPIO_Init(GPIOA, &PinCfg);
+				}
+
 				//PA5 : SPI1_SCK
 				//Slave Input Floating
 				PinCfg.GPIO_PinNumber = GPIO_PIN_5;
@@ -239,7 +268,26 @@ void MCAL_SPI_GPIO_SetPins(SPI_TypeDef* SPIx)
 			//PB15 : SPI1_MOSI
 			if( Global_SPI_Cfg[SPI2_INDEX]->Device_Mode == SPI_Device_Mode_Master )
 			{
+				//PB12 : SPI1_NSS
+				switch (Global_SPI_Cfg[SPI1_INDEX]->NSS)
+				{
+				// Input
+				case SPI_NSS_Hard_Master_SS_Out_DISABLE:
+					//  Master-Slave Input Floating
+					PinCfg.GPIO_PinNumber = GPIO_PIN_12;
+					PinCfg.GPIO_Mode = GPIO_PIN_MODE_INPUT_FLOA;
+					MCAL_GPIO_Init(GPIOB, &PinCfg);
+					break;
 
+				// Output
+				case SPI_NSS_Hard_Master_SS_Out_ENABLE:
+					// NNS Output Alternate function pp
+					PinCfg.GPIO_PinNumber = GPIO_PIN_12;
+					PinCfg.GPIO_Mode = GPIO_PIN_MODE_ALTFN_OUTPUT_PP;
+					PinCfg.GPIO_Output_Speed = GPIO_PIN_SPEED_10MHZ;
+					MCAL_GPIO_Init(GPIOB, &PinCfg);
+					break;
+				}
 				//PB13 : SPI1_SCK
 				//Master AF push-pull
 				PinCfg.GPIO_PinNumber = GPIO_PIN_13 ;
@@ -263,6 +311,15 @@ void MCAL_SPI_GPIO_SetPins(SPI_TypeDef* SPIx)
 
 			}else //Slave
 			{
+				//PB12 : SPI1_NSS
+				if(Global_SPI_Cfg[SPI1_INDEX]->NSS == SPI_NSS_Hard_Slave)
+				{
+					/* Hardware Master/Slave Input Floating */
+					PinCfg.GPIO_PinNumber = GPIO_PIN_12;
+					PinCfg.GPIO_Mode = GPIO_PIN_MODE_INPUT_FLOA;
+					MCAL_GPIO_Init(GPIOB, &PinCfg);
+				}
+
     			//PB13 : SPI1_SCK
 				//Slave Input floating
 				PinCfg.GPIO_PinNumber = GPIO_PIN_13;
@@ -294,9 +351,9 @@ void MCAL_SPI_GPIO_SetPins(SPI_TypeDef* SPIx)
  * @retval      -None
  * Note         -None
  **================================================================*/
-void MCAL_SPI_SendData(SPI_TypeDef* SPIx,uint16_t* pTxBuffer,enum PollingMechism PollingEn)
+void MCAL_SPI_SendData(SPI_TypeDef* SPIx,uint16_t* pTxBuffer,enum SPI_PollingMechism PollingEn)
 {
-	if (PollingEn == Enable)
+	if (PollingEn == SPI_ENABLE)
 		while(! (SPIx->SR & SPI_TXE_FLAG) );
 	SPIx->DR = *pTxBuffer;
 }
@@ -310,9 +367,9 @@ void MCAL_SPI_SendData(SPI_TypeDef* SPIx,uint16_t* pTxBuffer,enum PollingMechism
  * @retval      -None
  * Note         -None
  **================================================================*/
-void MCAL_SPI_ReceiveData(SPI_TypeDef* SPIx,uint16_t* pRxBuffer,enum PollingMechism PollingEn)
+void MCAL_SPI_ReceiveData(SPI_TypeDef* SPIx,uint16_t* pRxBuffer,enum SPI_PollingMechism PollingEn)
 {
-	if (PollingEn == Enable)
+	if (PollingEn == SPI_ENABLE)
 		while(! (SPIx->SR & SPI_RXNE_FLAG));
 	*pRxBuffer = SPIx->DR;
 }
@@ -326,13 +383,13 @@ void MCAL_SPI_ReceiveData(SPI_TypeDef* SPIx,uint16_t* pRxBuffer,enum PollingMech
  * @retval      -None
  * Note         -None
  **================================================================*/
-void MCAL_SPI_TXRX(SPI_TypeDef* SPIx,uint16_t* pTxRxBuffer,enum PollingMechism PollingEn)
+void MCAL_SPI_TXRX(SPI_TypeDef* SPIx,uint16_t* pTxRxBuffer,enum SPI_PollingMechism PollingEn)
 {
-	if (PollingEn == Enable)
+	if (PollingEn == SPI_ENABLE)
 		while(! (SPIx->SR & SPI_TXE_FLAG) );
 	SPIx->DR = *pTxRxBuffer;
 
-	if (PollingEn == Enable)
+	if (PollingEn == SPI_ENABLE)
 		while(! (SPIx->SR & SPI_RXNE_FLAG) );
 	*pTxRxBuffer = SPIx->DR;
 
@@ -350,9 +407,9 @@ void SPI1_IRQHandler(void)
 {
 	struct sSPI_IRQ_SRC irq_src;
 
-	irq_src.RXNE  = ( ( USART2->SR & (SPI_RXNE_FLAG) ) >> 0   );
-	irq_src.TXE   = ( ( USART2->SR & (SPI_TXE_FLAG) )  >> 1   );
-	irq_src.ERRI  = ( ( USART2->SR & (SPI_ERRI_FLAG) )  >> 4   );
+	irq_src.RXNE  = ( ( SPI1->SR & (SPI_RXNE_FLAG) ) >> 0   );
+	irq_src.TXE   = ( ( SPI1->SR & (SPI_TXE_FLAG) )  >> 1   );
+	irq_src.ERRI  = ( ( SPI1->SR & (SPI_ERRI_FLAG) )  >> 4   );
 
 	P_SPI_IRQ_Callback_g[0](irq_src);
 }
@@ -361,9 +418,9 @@ void SPI2_IRQHandler(void)
 {
 	struct sSPI_IRQ_SRC irq_src;
 
-	irq_src.RXNE  = ( ( USART2->SR & (SPI_RXNE_FLAG) ) >> 0   );
-	irq_src.TXE   = ( ( USART2->SR & (SPI_TXE_FLAG) )  >> 1   );
-	irq_src.ERRI  = ( ( USART2->SR & (SPI_ERRI_FLAG) )  >> 4   );
+	irq_src.RXNE  = ( ( SPI2->SR & (SPI_RXNE_FLAG) ) >> 0   );
+	irq_src.TXE   = ( ( SPI2->SR & (SPI_TXE_FLAG) )  >> 1   );
+	irq_src.ERRI  = ( ( SPI2->SR & (SPI_ERRI_FLAG) )  >> 4   );
 
 	P_SPI_IRQ_Callback_g[1](irq_src);
 }

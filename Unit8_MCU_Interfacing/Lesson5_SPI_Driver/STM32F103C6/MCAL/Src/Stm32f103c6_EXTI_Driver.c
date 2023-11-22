@@ -15,7 +15,7 @@
  *----------------------------------------------------------
  */
 
-void(* P_IRQ_Callback_g[15])(void);
+void(* P_IRQ_Callback_g[16])(void);
 
 /*
  *----------------------------------------------------------
@@ -132,12 +132,12 @@ void Update_EXTI(EXTI_Pinconfig_t* EXTI_config)
 	MCAL_GPIO_Init( EXTI_config->EXTI_PIN.GPIO_Port , &PinCfg );
 
 	//2 Update AFIO to Route Between EXTI Line with PORT A,B,C,D
-	uint8_t AFIO_EXTICR_Index = EXTI_config->EXTI_PIN.EXTI_InputLineNumber /4;
-	uint8_t AFIO_EXTICR_Pos = ( EXTI_config->EXTI_PIN.EXTI_InputLineNumber %4 )*4;
+	uint8_t AFIO_EXTICR_Index = EXTI_config->EXTI_PIN.EXTI_InputLineNumber / 4;
+	uint8_t AFIO_EXTICR_Pos = ( EXTI_config->EXTI_PIN.EXTI_InputLineNumber % 4 ) * 4;
 
 	//Clear Then Set The 4 bits
-	AFIO->EXTICR[AFIO_EXTICR_Index] &= ~(0xF << AFIO_EXTICR_Pos);
-	AFIO->EXTICR[AFIO_EXTICR_Index] |= ( AFIO_EXTI_GPIO_Mapping(EXTI_config->EXTI_PIN.GPIO_Port) << AFIO_EXTICR_Pos );
+	AFIO->EXTICR[AFIO_EXTICR_Index] &= ~( 0xF << AFIO_EXTICR_Pos );
+	AFIO->EXTICR[AFIO_EXTICR_Index] |= ( ( AFIO_EXTI_GPIO_Mapping(EXTI_config->EXTI_PIN.GPIO_Port) & 0x0F ) << AFIO_EXTICR_Pos );
 
 	//3 Update Falling and Rising Edge
 	EXTI->FTSR &= ~(1 << EXTI_config->EXTI_PIN.EXTI_InputLineNumber );
