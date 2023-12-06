@@ -1,0 +1,2 @@
+../Src/06_I2C_EEPROM_Test.c:32:5:main	24	static
+../Src/06_I2C_EEPROM_Test.c:59:6:Clock_Init	4	static
