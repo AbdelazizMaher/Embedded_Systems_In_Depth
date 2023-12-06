@@ -145,11 +145,11 @@ void Update_EXTI(EXTI_Pinconfig_t* EXTI_config)
 
 	if(EXTI_config->Trigger_Case == EXTI_Trigger_RISING )
 	{
-		EXTI->FTSR |= (1 << EXTI_config->EXTI_PIN.EXTI_InputLineNumber );
+		EXTI->RTSR |= (1 << EXTI_config->EXTI_PIN.EXTI_InputLineNumber );
 	}
 	else if( EXTI_config->Trigger_Case == EXTI_Trigger_FALLING )
 	{
-		EXTI->RTSR |= (1 << EXTI_config->EXTI_PIN.EXTI_InputLineNumber );
+		EXTI->FTSR |= (1 << EXTI_config->EXTI_PIN.EXTI_InputLineNumber );
 	}
 	else if( EXTI_config->Trigger_Case == EXTI_Trigger_RisingANDFalling )
 	{
