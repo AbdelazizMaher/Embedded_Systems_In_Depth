@@ -1,0 +1,4 @@
+../Src/Session04_ResetSequence.c:23:6:SwitchCPU_AccessLevel	16	static,ignoring_inline_asm
+../Src/Session04_ResetSequence.c:40:6:Clock_Init	4	static
+../Src/Session04_ResetSequence.c:50:6:EXTI9_CallBack	8	static
+../Src/Session04_ResetSequence.c:58:5:main	40	static
