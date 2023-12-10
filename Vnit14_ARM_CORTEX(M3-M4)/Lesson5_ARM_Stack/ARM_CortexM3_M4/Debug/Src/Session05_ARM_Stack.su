@@ -1,0 +1,7 @@
+../Src/Session05_ARM_Stack.c:44:6:SVC_Handler	4	static,ignoring_inline_asm
+../Src/Session05_ARM_Stack.c:49:6:EXTI9_CallBack	4	static
+../Src/Session05_ARM_Stack.c:63:5:TaskA	24	static
+../Src/Session05_ARM_Stack.c:68:5:TaskB	24	static
+../Src/Session05_ARM_Stack.c:73:6:MainOS	8	static,ignoring_inline_asm
+../Src/Session05_ARM_Stack.c:125:5:main	40	static
+../Src/Session05_ARM_Stack.c:147:6:Clock_Init	4	static

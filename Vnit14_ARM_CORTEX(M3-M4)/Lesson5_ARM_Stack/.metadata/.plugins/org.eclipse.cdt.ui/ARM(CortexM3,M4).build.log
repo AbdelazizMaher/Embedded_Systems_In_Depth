@@ -1,0 +1,10 @@
+21:17:45 **** Incremental Build of configuration Debug for project ARM(CortexM3,M4) ****
+make -j16 all 
+arm-none-eabi-gcc -gdwarf-2 -o "ARM(CortexM3,M4).elf" @"objects.list"   -mcpu=cortex-m3 -T"C:\Users\Abdel\OneDrive\Documents\EmbeddedSystemsInDepth\STM32CUBE_IDE_Diploma_Workspace\Unit14_ARM_CORTEX(M3-M4)\ARM\ARM(CortexM3,M4)\STM32F103C6TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="ARM(CortexM3,M4).map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+c:\st\stm32cubeide_1.4.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.0.202111181127\tools\arm-none-eabi\bin\ld.exe: cannot find M4).map: No such file or directory
+collect2.exe: error: ld returned 1 exit status
+make: *** [makefile:68: ARM(CortexM3,M4).elf] Error 1
+"make -j16 all" terminated with exit code 2. Build might be incomplete.
+
+21:17:45 Build Failed. 2 errors, 0 warnings. (took 344ms)
+
