@@ -26,14 +26,14 @@ void SwitchCPU_AccessLevel(enum eCPU_AccessLevel Access_Level)
 	{
 	case privileged:
 		__asm(" mrs r3,CONTROL \n\t"
-			  " lsr r3,r3,#0x1 \n\t"
-			  " lsl r3,r3,#0x1 \n\t"
-			  " msr CONTROL,r0 "    );
+		      " lsr r3,r3,#0x1 \n\t"
+		      " lsl r3,r3,#0x1 \n\t"
+		      " msr CONTROL,r3 "    );
 		break;
 	case unprivileged:
 		__asm(" mrs r3,CONTROL \n\t"
-			  " orr r3,r3,#0x1 \n\t"
-			  " msr CONTROL,r0 "    );
+		      " orr r3,r3,#0x1 \n\t"
+		      " msr CONTROL,r3 "    );
 		break;
 	}
 }
