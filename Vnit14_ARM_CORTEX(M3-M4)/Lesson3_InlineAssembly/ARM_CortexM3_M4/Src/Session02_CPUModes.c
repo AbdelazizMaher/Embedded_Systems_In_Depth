@@ -1,5 +1,5 @@
 /*
- * 02_EXTI_Test.c
+ * Session02_CPUModes.c
  *
  *  Created on: Mar 24, 2023
  *      Author: Abdelaziz Maher
