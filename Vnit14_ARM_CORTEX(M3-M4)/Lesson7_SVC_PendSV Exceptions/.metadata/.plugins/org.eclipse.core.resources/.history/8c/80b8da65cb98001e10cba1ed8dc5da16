@@ -1,0 +1,68 @@
+/*
+ * Session07_SVC_PendSV Exceptions.c
+ *
+ *  Created on: Mar 24, 2023
+ *      Author: Abdelaziz Maher
+ */
+
+#include <stdint.h>
+
+#if !defined(__SOFT_FP__) && defined(__ARM_FP)
+  #warning "FPU is not initialized, but the project is compiling for an FPU. Please initialize the FPU before use."
+#endif
+
+#include "core_cm3.h"
+#include"Stm32f103x6.h"
+
+
+
+void __attribute((naked)) SVC_Handler()
+{
+	__asm("TST lr,0x4   \n\t"
+		  "             \n\t"
+		  "MRSEQ r0,MSP \n\t"
+		  "MRSNE r0,PSP \n\t"
+		  "bl ");
+
+}
+
+int OS_SVC_Set(int a, int b , int SVC_ID)
+{
+	int result;
+
+	switch( SVC_ID )
+	{
+	case 1:
+		__asm(" SVC #0x1");   //ADD
+		break;
+	case 2:
+		__asm(" SVC #0x2");   //SUB
+		break;
+	case 3:
+		__asm(" SVC #0x3");   //MUL
+		break;
+	}
+
+	return result;
+}
+
+int main(void)
+{
+	int SVC_result;
+
+	//ADD
+	SVC_result = OS_SVC_Set(3,3,1);
+	//SUB
+	SVC_result = OS_SVC_Set(3,3,2);
+	 //MUL
+	SVC_result = OS_SVC_Set(3,3,3);
+
+	while(1)
+	{
+
+	}
+
+	return 0;
+}
+
+
