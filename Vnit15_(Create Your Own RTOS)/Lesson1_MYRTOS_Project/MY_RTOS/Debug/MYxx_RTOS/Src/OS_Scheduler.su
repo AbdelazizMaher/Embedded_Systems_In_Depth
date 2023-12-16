@@ -1,0 +1,6 @@
+../MYxx_RTOS/Src/OS_Scheduler.c:50:16:MYRTOS_Init	16	static
+../MYxx_RTOS/Src/OS_Scheduler.c:74:6:MYRTOS_Create_MainStack	4	static
+../MYxx_RTOS/Src/OS_Scheduler.c:82:6:MYRTOS_IDLE_Task	4	static,ignoring_inline_asm
+../MYxx_RTOS/Src/OS_Scheduler.c:90:16:MYRTOS_CreateTask	24	static
+../MYxx_RTOS/Src/OS_Scheduler.c:119:6:MYRTOS_Create_TaskStack	24	static
+../MYxx_RTOS/Src/OS_Scheduler.c:157:6:OS_SVC	16	static

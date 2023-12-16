@@ -1,0 +1,74 @@
+/*
+ * OS_Scheduler.c
+ *
+ *  Created on: Dec 13, 2023
+ *      Author: Abdelaziz Maher
+ */
+
+#include "OS_Scheduler.h"
+#include "OS_Queue.h"
+
+struct
+{
+	sOS_Task_ControlBlock* OS_Tasks[100];
+	unsigned int _S_MSP_Task;
+	unsigned int _E_MSP_Task;
+	unsigned int PSP_TaskLocator;
+	unsigned int NoOfActiveTasks;
+	sOS_Task_ControlBlock* Current_Task;
+	sOS_Task_ControlBlock* Next_Task;
+	enum
+	{
+		OS_SUSPEND,
+		OS_RUNNING
+	}eOS_Modes;
+}sOS_ControlBlock;
+
+static void MYRTOS_Create_MainStack();
+
+eOS_ErrorState MYRTOS_Init()
+{
+	eOS_ErrorState err = NOERROR;
+
+	// Update OS Mode ( OS_SUSPEND )
+	sOS_ControlBlock.eOS_Modes = OS_SUSPEND;
+	// Specify OS Main Stack
+	MYRTOS_Create_MainStack();
+	// Create OS Ready Queue
+
+	//Configure Idle Task
+
+
+
+
+	return err;
+}
+
+void MYRTOS_Create_MainStack()
+{
+	sOS_ControlBlock._S_MSP_Task = (unsigned int)&_estack;
+	sOS_ControlBlock._E_MSP_Task = ( sOS_ControlBlock._S_MSP_Task - MainStackSize ) ;
+	// Align 8 bytes as space between Main stack and Tasks stack
+	sOS_ControlBlock.PSP_TaskLocator = ( sOS_ControlBlock._E_MSP_Task - 8 );
+}
+
+void OS_SVC(unsigned char SVC_Number)
+{
+ 	switch( SVC_Number )
+ 	{
+ 	case 0:
+ 		//Activate
+ 		break;
+ 	case 1:
+ 		//Terminate
+ 		break;
+ 	case 2:
+ 		//
+ 		break;
+ 	case 3:
+ 	   //PENDSV
+ 		break;
+ 	}
+}
+
+

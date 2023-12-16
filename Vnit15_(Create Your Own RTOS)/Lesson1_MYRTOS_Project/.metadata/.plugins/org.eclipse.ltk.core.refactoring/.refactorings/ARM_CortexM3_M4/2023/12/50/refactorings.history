@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">&#x0A;<refactoring comment="Rename resource &apos;ARM_CortexM3_M4/Src/03_EXTI_Test2.c&apos; to &apos;Session01.c&apos;" description="Rename resource &apos;03_EXTI_Test2.c&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="Src/03_EXTI_Test2.c" name="Session01.c" stamp="1702193798269" updateReferences="true"/>&#x0A;<refactoring comment="Rename resource &apos;ARM_CortexM3_M4/Src/Session01.c&apos; to &apos;Session02_CPUModes.c&apos;" description="Rename resource &apos;Session01.c&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="Src/Session01.c" name="Session02_CPUModes.c" stamp="1702194223153" updateReferences="true"/>
+</session>

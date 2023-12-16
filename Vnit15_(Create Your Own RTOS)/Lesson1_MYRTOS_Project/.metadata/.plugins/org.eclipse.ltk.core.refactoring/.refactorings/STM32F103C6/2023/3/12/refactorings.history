@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;STM32F103C6/Src/main.c&apos; to &apos;01_GPIO_Test.c&apos;" description="Rename resource &apos;main.c&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="Src/main.c" name="01_GPIO_Test.c" stamp="1679642343646" updateReferences="true"/>
+</session>

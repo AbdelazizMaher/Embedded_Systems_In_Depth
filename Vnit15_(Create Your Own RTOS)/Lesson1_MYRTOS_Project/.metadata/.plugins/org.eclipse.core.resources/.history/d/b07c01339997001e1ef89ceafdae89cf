@@ -1,0 +1,156 @@
+/*
+ * 02_EXTI_Test.c
+ *
+ *  Created on: Mar 24, 2023
+ *      Author: Abdelaziz Maher
+ */
+
+#include <stdint.h>
+
+#if !defined(__SOFT_FP__) && defined(__ARM_FP)
+  #warning "FPU is not initialized, but the project is compiling for an FPU. Please initialize the FPU before use."
+#endif
+
+#include"Stm32f103x6.h"
+#include"Stm32f103c6_GPIO_Driver.h"
+#include "Stm32f103c6_EXTI_Driver.h"
+
+
+uint8_t TaskA_Flag ,TaskB_Flag ,IRQ_Flag;
+extern int _estack;
+
+//Main Stack
+#define Main_StackSize      512
+unsigned int _S_MSP = (unsigned int)&_estack;
+unsigned int _E_MSP;
+
+// Task A process stack
+#define TaskA_StackSize     100
+unsigned int _S_PSP_TA;
+unsigned int _E_PSP_TA;
+
+// Task B process stack
+#define TaskB_StackSize     100
+unsigned int _S_PSP_TB;
+unsigned int _E_PSP_TB;
+
+#define OS_SwitchCPU_AccessLevel_privileged() 		  __asm volatile(" mrs r3,CONTROL \n\t  lsr r3,r3,#0x1 \n\t  lsl r3,r3,#0x1 \n\t  msr CONTROL,r3")
+#define OS_SwitchCPU_AccessLevel_unprivileged()       __asm volatile(" mrs r3,CONTROL \n\t  orr r3,r3,#0x1 \n\t  msr CONTROL,r3")
+#define OS_SetPSP(Addr)                               __asm volatile(" msr PSP,%[in] " : :[in] "r" (Addr) )
+#define OS_SwitchSP_ToPSP()                           __asm volatile(" mrs r3,CONTROL \n\t  orr r3,r3,#0x02 \n\t  msr CONTROL,r3")
+#define OS_SwitchSP_ToMSP()                           __asm volatile(" mrs r3,CONTROL \n\t  orr r3,r3,#0x05 \n\t  msr CONTROL,r3")
+#define OS_Generate_Exception();                      __asm volatile(" SVC #0x3")
+
+void SVC_Handler()
+{
+	OS_SwitchCPU_AccessLevel_privileged();
+}
+
+void EXTI9_CallBack(void)
+{
+	if( IRQ_Flag == 0 )
+	{
+		TaskA_Flag = 1;
+		IRQ_Flag = 1;
+	}
+	else if( IRQ_Flag == 1 )
+	{
+		TaskB_Flag = 1;
+		IRQ_Flag = 0;
+	}
+}
+
+int TaskA(int a, int b, int c)
+{
+	return a+b+c;
+}
+
+int TaskB(int a, int b , int c ,int d)
+{
+	return a+b+c+d;
+}
+
+void MainOS()
+{
+	//Main Stack
+	_E_MSP = (_S_MSP - Main_StackSize);
+
+	//TaskA Stack
+	_S_PSP_TA = (_E_MSP - 8);
+	_E_PSP_TA = (_S_PSP_TA - TaskA_StackSize);
+
+	//TaskB Stack
+	_S_PSP_TB = (_E_PSP_TA - 8);
+	_E_PSP_TB = (_S_PSP_TB - TaskB_StackSize);
+
+	while(1)
+	{
+		__asm("nop");
+
+		if( TaskA_Flag == 1)
+		{
+			// Set PSP register = _S_PSP_TA
+			OS_SetPSP(_S_PSP_TA);
+			// SP -> PSP
+			OS_SwitchSP_ToPSP();
+			// Switch from privileged -> unprivileged
+			OS_SwitchCPU_AccessLevel_unprivileged();
+			// Run Task
+			TaskA_Flag = TaskA( 1,2,3 );
+			// Switch from unprivileged -> privileged
+			OS_Generate_Exception();
+			// SP -> MSP
+			OS_SwitchSP_ToMSP();
+
+		}
+		else if( TaskB_Flag == 1 )
+		{
+			// Set PSP register = _S_PSP_TB
+			OS_SetPSP(_S_PSP_TB);
+			// SP -> PSP
+			OS_SwitchSP_ToPSP();
+			// Switch from privileged -> unprivileged
+			OS_SwitchCPU_AccessLevel_unprivileged();
+			// Run Task
+			TaskB_Flag = TaskB( 1,2,3,4 );
+			// Switch from unprivileged -> privileged
+			OS_Generate_Exception();
+			// SP -> MSP
+			OS_SwitchSP_ToMSP();
+		}
+	}
+}
+
+void Clock_Init();
+int main(void)
+{
+	Clock_Init();
+
+	EXTI_Pinconfig_t cfg;
+
+	cfg.EXTI_PIN = EXTI9B9;
+	cfg.IRQ_EN = EXTI_IRQ_ENABLE;
+	cfg.P_IRQ_Callback = EXTI9_CallBack;
+	cfg.Trigger_Case = EXTI_Trigger_RISING;
+	MCAL_EXTI_GPIO_INIT(&cfg);
+
+	MainOS();
+
+	while(1)
+	{
+
+	}
+
+	return 0;
+}
+
+void Clock_Init()
+{
+	// Enable PORTA ,PORTB clock
+	GPIOA_CLOCK_ENABLE();
+	GPIOB_CLOCK_ENABLE();
+
+	//Enable  AFIO clock
+	AFIO_CLOCK_ENABLE();
+}
+

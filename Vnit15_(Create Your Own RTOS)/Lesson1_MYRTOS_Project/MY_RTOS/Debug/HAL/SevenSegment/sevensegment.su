@@ -1,0 +1,2 @@
+../HAL/SevenSegment/sevensegment.c:12:6:SevSegment_Init	16	static
+../HAL/SevenSegment/sevensegment.c:46:6:SevSegment_Write_Num	16	static

@@ -1,0 +1,176 @@
+/*
+ * OS_Scheduler.c
+ *
+ *  Created on: Dec 13, 2023
+ *      Author: Abdelaziz Maher
+ */
+
+#include "OS_Scheduler.h"
+#include "OS_Queue.h"
+
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+//  Private Variables ('File Global')
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+
+FIFO_t ReadyQueue;
+sOS_Task_ControlBlock* ReadyQueue_FIFO[100];
+
+sOS_Task_ControlBlock TCB_IDLE_Task;
+
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+//  Private function prototypes
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+
+static void MYRTOS_Create_MainStack();
+static void MYRTOS_IDLE_Task();
+static void MYRTOS_Create_TaskStack(sOS_Task_ControlBlock* Task_TCB);
+
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+//  Private Type Definitions ( structures/enums )
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+
+struct
+{
+	sOS_Task_ControlBlock* OS_Tasks[100];
+	unsigned int _S_MSP_Task;
+	unsigned int _E_MSP_Task;
+	unsigned int PSP_TaskLocator;
+	unsigned int NoOfActiveTasks;
+	sOS_Task_ControlBlock* Current_Task;
+	sOS_Task_ControlBlock* Next_Task;
+	enum
+	{
+		OS_SUSPEND,
+		OS_RUNNING
+	}eOS_Modes;
+}sOS_ControlBlock;
+
+
+
+eOS_ErrorState MYRTOS_Init()
+{
+	eOS_ErrorState err = NOERROR;
+
+	// Update OS Mode ( OS_SUSPEND )
+	sOS_ControlBlock.eOS_Modes = OS_SUSPEND;
+	// Specify OS Main Stack
+	MYRTOS_Create_MainStack();
+	// Create OS Ready Queue
+	if( FIFO_Init(&ReadyQueue ,ReadyQueue_FIFO, 100) != FIFO_NO_ERROR )
+	{
+		err += OS_QUEUE_INIT_ERROR;
+	}
+	//Configure IDLE Task
+	strcpy( TCB_IDLE_Task.TaskName , "Idle_Task" );
+	TCB_IDLE_Task.Priority = 255;
+	TCB_IDLE_Task.pTaskEntry = MYRTOS_IDLE_Task;
+	TCB_IDLE_Task.Stack_Size = 300;
+
+	MYRTOS_CreateTask(&TCB_IDLE_Task);
+
+	return err;
+}
+
+void MYRTOS_Create_MainStack()
+{
+	sOS_ControlBlock._S_MSP_Task = (unsigned int)&_estack;
+	sOS_ControlBlock._E_MSP_Task = ( sOS_ControlBlock._S_MSP_Task - MainStackSize ) ;
+	// Align 8 bytes as space between Main stack and Tasks stack
+	sOS_ControlBlock.PSP_TaskLocator = ( sOS_ControlBlock._E_MSP_Task - 8 );
+}
+
+void MYRTOS_IDLE_Task()
+{
+	while(1)
+	{
+		__asm("NOP");
+	}
+}
+
+eOS_ErrorState MYRTOS_CreateTask(sOS_Task_ControlBlock* Task_TCB)
+{
+	eOS_ErrorState err = NOERROR;
+
+	// Create Task Stack
+	Task_TCB->_S_PSP_Task = sOS_ControlBlock.PSP_TaskLocator;
+	Task_TCB->_E_PSP_Task = ( Task_TCB->_S_PSP_Task - Task_TCB->Stack_Size );
+
+	// Check if Task Stack size exceeded the stack limit
+	if( Task_TCB->_E_PSP_Task < (unsigned int)&_eheap )
+	{
+		return TASK_EXCEED_STACKSIZE;
+	}
+
+	// Align 8 bytes as space between Task stack and Next Task stack
+	sOS_ControlBlock.PSP_TaskLocator = ( Task_TCB->_E_PSP_Tas - 8 );
+
+	// Initialize PSP Task Stack
+	MYRTOS_Create_TaskStack(Task_TCB);
+
+	// Add Task to Task list
+	sOS_ControlBlock.OS_Tasks[sOS_ControlBlock.NoOfActiveTasks++] = Task_TCB;
+
+	// Update Task State
+	Task_TCB->eOS_TaskState = TASK_SUSPEND;
+
+ 	return err;
+}
+
+void MYRTOS_Create_TaskStack(sOS_Task_ControlBlock* Task_TCB)
+{
+	/*Task Frame
+	 * =====
+	 * xPSR
+	 * PC (Next Instruction that should run)
+	 * LR ( Return Register which is saved in the stack before task switches)
+	 * r12
+	 * r3
+	 * r2
+	 * r1
+	 * r0
+	 * =====
+	 * r4,r5,r6,r7,r8,r9,r10,r11 -> ( Saved/Restored Manually)
+	 */
+	Task_TCB->Current_PSP_Location = (unsigned int*)Task_TCB->_S_PSP_Task;
+
+	Task_TCB->Current_PSP_Location--;
+	// Dummy XPSR where XPSR.T=1 -> to avoid Bus Fault
+	*(Task_TCB->Current_PSP_Location) = 0x01000000;
+
+	Task_TCB->Current_PSP_Location--;
+	// PC -> Execution starts from the Task Entry
+	*(Task_TCB->Current_PSP_Location) = (unsigned int)Task_TCB->pTaskEntry;
+
+	Task_TCB->Current_PSP_Location--;
+	// Dummy LR -> Processor reset value
+	*(Task_TCB->Current_PSP_Location) = 0xFFFFFFFF;
+
+	for( int i = 0 ; i < 13 ; i++ )
+	{
+		Task_TCB->Current_PSP_Location--;
+		// r(0....12)
+		*(Task_TCB->Current_PSP_Location) = 0;
+	}
+
+}
+
+void OS_SVC(unsigned char SVC_Number)
+{
+ 	switch( SVC_Number )
+ 	{
+ 	case 0:
+ 		//Activate
+ 		break;
+ 	case 1:
+ 		//Terminate
+ 		break;
+ 	case 2:
+ 		//
+ 		break;
+ 	case 3:
+ 	   //PENDSV
+ 		break;
+ 	}
+}
+
+

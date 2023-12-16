@@ -1,0 +1,44 @@
+/*
+ * OS_Scheduler.c
+ *
+ *  Created on: Dec 13, 2023
+ *      Author: Abdelaziz Maher
+ */
+
+#include "OS_Scheduler.h"
+
+eOS_ErrorState MYRTOS_Init()
+{
+	eOS_ErrorState err = NOERROR;
+
+	// Update OS Mode ( OS_SUSPENDED )
+	// Specify OS Main Stack
+	// Create OS Ready Queue
+	//Configure Idle Task
+
+
+
+
+	return err;
+}
+
+void OS_SVC(unsigned char SVC_Number)
+{
+ 	switch( SVC_Number )
+ 	{
+ 	case 0:
+ 		//Activate
+ 		break;
+ 	case 1:
+ 		//Terminate
+ 		break;
+ 	case 2:
+ 		//
+ 		break;
+ 	case 3:
+ 	   //PENDSV
+ 		break;
+ 	}
+}
+
+

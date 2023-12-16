@@ -1,0 +1,14 @@
+/*
+ * OS_Scheduler.c
+ *
+ *  Created on: Dec 13, 2023
+ *      Author: Abdelaziz Maher
+ */
+
+#include "CortexMx_OS_Porting.h"
+#include "OS_Scheduler.h"
+
+
+OS_SVC(SVC_Number);
+
+

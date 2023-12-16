@@ -1,0 +1,4 @@
+../Src/main.c:20:6:Task1	4	static
+../Src/main.c:28:6:Task2	4	static
+../Src/main.c:36:6:Task3	4	static
+../Src/main.c:44:5:main	16	static
