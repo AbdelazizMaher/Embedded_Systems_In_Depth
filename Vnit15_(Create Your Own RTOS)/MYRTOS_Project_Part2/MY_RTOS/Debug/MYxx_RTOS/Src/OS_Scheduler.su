@@ -1,0 +1,15 @@
+../MYxx_RTOS/Src/OS_Scheduler.c:61:16:MYRTOS_Init	16	static
+../MYxx_RTOS/Src/OS_Scheduler.c:85:6:MYRTOS_StartOS	8	static,ignoring_inline_asm
+../MYxx_RTOS/Src/OS_Scheduler.c:112:6:MYRTOS_Create_MainStack	4	static
+../MYxx_RTOS/Src/OS_Scheduler.c:120:6:MYRTOS_IDLE_Task	4	static,ignoring_inline_asm
+../MYxx_RTOS/Src/OS_Scheduler.c:129:16:MYRTOS_CreateTask	24	static
+../MYxx_RTOS/Src/OS_Scheduler.c:159:16:MYRTOS_ActivateTask	24	static
+../MYxx_RTOS/Src/OS_Scheduler.c:173:16:MYRTOS_TerminateTask	24	static
+../MYxx_RTOS/Src/OS_Scheduler.c:185:6:MYRTOS_Create_TaskStack	24	static
+../MYxx_RTOS/Src/OS_Scheduler.c:223:6:OS_SVC_Set	16	static,ignoring_inline_asm
+../MYxx_RTOS/Src/OS_Scheduler.c:239:6:OS_SVC_Services	24	static
+../MYxx_RTOS/Src/OS_Scheduler.c:274:6:MYRTOS_TaskScheduler	24	static
+../MYxx_RTOS/Src/OS_Scheduler.c:311:6:BubbleSort	24	static
+../MYxx_RTOS/Src/OS_Scheduler.c:334:6:MYRTOS_Dispatcher	8	static
+../MYxx_RTOS/Src/OS_Scheduler.c:343:29:PendSV_Handler	0	static,ignoring_inline_asm
+../MYxx_RTOS/Src/OS_Scheduler.c:406:6:SysTick_Handler	8	static

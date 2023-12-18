@@ -1,0 +1,15 @@
+/*
+ * OS_Scheduler.h
+ *
+ *  Created on: Dec 13, 2023
+ *      Author: Abdelaziz Maher
+ */
+
+#ifndef INC_OS_SCHEDULER_H_
+#define INC_OS_SCHEDULER_H_
+
+
+#include "CortexMx_OS_Porting.h"
+
+
+#endif /* INC_OS_SCHEDULER_H_ */

@@ -1,0 +1,112 @@
+/*
+ * Session07_SVC_PendSV Exceptions.c
+ *
+ *  Created on: Mar 24, 2023
+ *      Author: Abdelaziz Maher
+ */
+
+#include <stdint.h>
+
+#if !defined(__SOFT_FP__) && defined(__ARM_FP)
+  #warning "FPU is not initialized, but the project is compiling for an FPU. Please initialize the FPU before use."
+#endif
+
+#include "core_cm3.h"
+#include"Stm32f103x6.h"
+
+
+ void PendSV_Handler()
+{
+	 // Clear PendSV
+	 SCB->ICSR = SCB_ICSR_PENDSVCLR_Msk;
+
+}
+
+void OS_SVC_Services(int* StackFramePointer )
+{
+	// OS_SVC_Set Stack -> ro -> StackFramePointer
+	// OS_SVC_Set Stack : r0,r1,r2,23,r12,LR,PC,XPSR
+
+	unsigned char SVC_Number;
+	unsigned int Val1, Val2;
+
+	SVC_Number =  *( (unsigned char*)( (unsigned char*)(StackFramePointer[6]) -2) );
+
+	Val1 = StackFramePointer[0];
+	Val2 = StackFramePointer[1];
+
+	switch( SVC_Number )
+	{
+	case 0:
+		StackFramePointer[0] = Val1 + Val2;   //ADD
+		break;
+	case 1:
+		StackFramePointer[0] = Val1 - Val2;   //SUB
+		break;
+	case 2:
+		StackFramePointer[0] = Val1 * Val2;   //MUL
+		break;
+	case 3:
+		SCB->ICSR = SCB_ICSR_PENDSVSET_Msk;   //PENDSV
+		break;
+	}
+}
+
+ __attribute(( naked )) void SVC_Handler()
+{
+	__asm("TST lr,0x4   \n\t"
+		  "ITE EQ       \n\t"
+		  "MRSEQ r0,MSP \n\t"
+		  "MRSNE r0,PSP \n\t"
+		  "b OS_SVC_Services");
+
+}
+
+int OS_SVC_Set(int a, int b , int SVC_ID)
+{
+	int result;
+
+	switch( SVC_ID )
+	{
+	case 0:
+		__asm(" SVC #0x0");   //ADD
+		break;
+	case 1:
+		__asm(" SVC #0x1");   //SUB
+		break;
+	case 2:
+		__asm(" SVC #0x2");   //MUL
+		break;
+	case 3:
+		__asm(" SVC #0x3");   //PENDSV
+		break;
+	}
+    // r0 will have the return value from OS_SVC_Services
+	__asm("mov %[out],r0"
+		  : [out] "=r" (result) );
+
+	return result;
+}
+
+int main(void)
+{
+	int SVC_result;
+
+	//ADD
+	SVC_result = OS_SVC_Set(3,3,0);
+	//SUB
+	SVC_result = OS_SVC_Set(3,3,1);
+	 //MUL
+	SVC_result = OS_SVC_Set(3,3,2);
+	 //PENDSV
+	SVC_result = OS_SVC_Set(3,3,3);
+
+	while(1)
+	{
+
+	}
+
+	return 0;
+}
+
+

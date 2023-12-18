@@ -1,0 +1,21 @@
+13:15:47 **** Incremental Build of configuration Debug for project ARM_CortexM3_M4 ****
+make -j16 all 
+arm-none-eabi-gcc -gdwarf-2 "../Src/Session07_SVC_PendSV Exceptions.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DSTM32 -DSTM32F1 -DSTM32F103C6Tx -c -I"C:/Users/Abdel/OneDrive/Documents/EmbeddedSystemsInDepth/STM32CUBE_IDE_Diploma_Workspace/Unit14_ARM_CORTEX(M3-M4)/ARM/ARM_CortexM3_M4/MCAL/Inc" -I"C:/Users/Abdel/OneDrive/Documents/EmbeddedSystemsInDepth/STM32CUBE_IDE_Diploma_Workspace/Unit14_ARM_CORTEX(M3-M4)/ARM/ARM_CortexM3_M4/HAL/SevenSegment" -I"C:/Users/Abdel/OneDrive/Documents/EmbeddedSystemsInDepth/STM32CUBE_IDE_Diploma_Workspace/Unit14_ARM_CORTEX(M3-M4)/ARM/ARM_CortexM3_M4/HAL/KeyPad" -I"C:/Users/Abdel/OneDrive/Documents/EmbeddedSystemsInDepth/STM32CUBE_IDE_Diploma_Workspace/Unit14_ARM_CORTEX(M3-M4)/ARM/ARM_CortexM3_M4/HAL/LCD" -I../Inc -I"C:/Users/Abdel/OneDrive/Documents/EmbeddedSystemsInDepth/STM32CUBE_IDE_Diploma_Workspace/Unit14_ARM_CORTEX(M3-M4)/ARM/ARM_CortexM3_M4/HAL/EEPROM" -I"C:/Users/Abdel/OneDrive/Documents/EmbeddedSystemsInDepth/STM32CUBE_IDE_Diploma_Workspace/Unit14_ARM_CORTEX(M3-M4)/ARM/ARM_CortexM3_M4/CMSIS_V5" -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Src/Session07_SVC_PendSV Exceptions.d" -MT"Src/Session07_SVC_PendSV Exceptions.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Src/Session07_SVC_PendSV Exceptions.o"
+../Src/Session07_SVC_PendSV Exceptions.c: In function 'main':
+../Src/Session07_SVC_PendSV Exceptions.c:93:6: warning: variable 'SVC_result' set but not used [-Wunused-but-set-variable]
+   93 |  int SVC_result;
+      |      ^~~~~~~~~~
+arm-none-eabi-gcc -gdwarf-2 -o "ARM_CortexM3_M4.axf" @"objects.list"   -mcpu=cortex-m3 -T"C:\Users\Abdel\OneDrive\Documents\EmbeddedSystemsInDepth\STM32CUBE_IDE_Diploma_Workspace\Unit14_ARM_CORTEX(M3-M4)\ARM\ARM_CortexM3_M4\STM32F103C6TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="ARM_CortexM3_M4.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: ARM_CortexM3_M4.axf
+ 
+arm-none-eabi-size   ARM_CortexM3_M4.axf 
+arm-none-eabi-objdump -h -S  ARM_CortexM3_M4.axf  > "ARM_CortexM3_M4.list"
+   text	   data	    bss	    dec	    hex	filename
+   2424	      8	   1720	   4152	   1038	ARM_CortexM3_M4.axf
+Finished building: default.size.stdout
+ 
+Finished building: ARM_CortexM3_M4.list
+ 
+
+13:15:49 Build Finished. 0 errors, 1 warnings. (took 1s.345ms)
+
