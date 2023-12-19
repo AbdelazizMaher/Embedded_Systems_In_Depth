@@ -1,0 +1,56 @@
+/*
+ * CortexMx_OS_Porting.c
+ *
+ *  Created on: Dec 13, 2023
+ *      Author: Abdelaziz Maher
+ */
+
+
+
+#include "CortexMx_OS_Porting.h"
+
+
+void NMI_Handler()
+{
+	while(1);
+}
+
+void HardFault_Handler()
+{
+	while(1);
+}
+
+void MemManage_Handler()
+{
+	while(1);
+}
+
+void BusFault_Handler()
+{
+	while(1);
+}
+
+void UsageFault_Handler()
+{
+	while(1);
+}
+
+void PendSV_Handler()
+{
+	 // Clear PendSV
+	 SCB->ICSR = SCB_ICSR_PENDSVCLR_Msk;
+
+}
+
+
+
+
+  __attribute(( naked )) void SVC_Handler()
+ {
+ 	__asm("TST lr,0x4   \n\t"
+ 		  "ITE EQ       \n\t"
+ 		  "MRSEQ r0,MSP \n\t"
+ 		  "MRSNE r0,PSP \n\t"
+ 		  "b OS_SVC_Services");
+
+ }

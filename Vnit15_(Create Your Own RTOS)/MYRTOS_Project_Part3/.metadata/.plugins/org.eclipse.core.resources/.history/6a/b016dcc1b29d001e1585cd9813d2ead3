@@ -1,0 +1,413 @@
+/*
+ * OS_Scheduler.c
+ *
+ *  Created on: Dec 13, 2023
+ *      Author: Abdelaziz Maher
+ */
+
+#include "OS_Scheduler.h"
+#include "OS_Queue.h"
+
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+//  Private Variables ('File Global')
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+
+FIFO_t ReadyQueue;
+sOS_Task_ControlBlock* ReadyQueue_FIFO[100];
+
+sOS_Task_ControlBlock TCB_IDLE_Task;
+
+
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+//  Private Type Definitions ( structures/enums )
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+
+struct
+{
+	sOS_Task_ControlBlock* OS_Tasks[100];
+	unsigned int _S_MSP_Task;
+	unsigned int _E_MSP_Task;
+	unsigned int PSP_TaskLocator;
+	unsigned int NoOfActiveTasks;
+	sOS_Task_ControlBlock* Current_Task;
+	sOS_Task_ControlBlock* Next_Task;
+	enum
+	{
+		OS_SUSPEND,
+		OS_RUNNING
+	}eOS_Modes;
+}sOS_ControlBlock;
+
+typedef enum
+{
+	ACTIVATE_TASK,
+	TERMINATE_TASK,
+	TASKWAITING
+}eSVC_ID;
+
+
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+//  Private function prototypes
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+
+static void MYRTOS_Create_MainStack();
+static void MYRTOS_IDLE_Task();
+static void MYRTOS_Create_TaskStack(sOS_Task_ControlBlock* Task_TCB);
+static void OS_SVC_Set(eSVC_ID SVC_ID);
+static void MYRTOS_TaskScheduler();
+static void BubbleSort();
+static void Decide_whatNext();
+
+eOS_ErrorState MYRTOS_Init()
+{
+	eOS_ErrorState err = NOERROR;
+
+	// Update OS Mode ( OS_SUSPEND )
+	sOS_ControlBlock.eOS_Modes = OS_SUSPEND;
+	// Specify OS Main Stack
+	MYRTOS_Create_MainStack();
+	// Create OS Ready Queue
+	if( FIFO_Init(&ReadyQueue ,ReadyQueue_FIFO, 100) != FIFO_NO_ERROR )
+	{
+		err += OS_QUEUE_INIT_ERROR;
+	}
+	//Configure IDLE Task
+	strcpy( TCB_IDLE_Task.TaskName , "Idle_Task" );
+	TCB_IDLE_Task.Priority = 255;
+	TCB_IDLE_Task.pTaskEntry = MYRTOS_IDLE_Task;
+	TCB_IDLE_Task.Stack_Size = 300;
+
+	MYRTOS_CreateTask(&TCB_IDLE_Task);
+
+	return err;
+}
+
+void MYRTOS_StartOS()
+{
+	// Update OS Mode ( OS_RUNNING )
+	sOS_ControlBlock.eOS_Modes = OS_RUNNING;
+
+	// Set Default Task -> Current Task -> Idle_Task
+	sOS_ControlBlock.Current_Task = &TCB_IDLE_Task;
+
+	// Activate Task
+	MYRTOS_ActivateTask(&TCB_IDLE_Task);
+
+	//Start Ticker -> 1ms
+	Start_Ticker();
+
+	// Set PSP -> Idle_Task Current Stack
+	OS_SetPSP(sOS_ControlBlock.Current_Task->Current_PSP_Location);
+
+	//Switch Thread Mode SP from MSP to PSP
+	OS_SwitchSP_ToPSP();
+
+	// Switch to Unprivileged to execute User Tasks
+	OS_SwitchCPU_AccessLevel_unprivileged();
+
+	// Run Idle Task as Default Task
+	TCB_IDLE_Task.pTaskEntry();
+}
+
+void MYRTOS_Create_MainStack()
+{
+	sOS_ControlBlock._S_MSP_Task = (unsigned int)&_estack;
+	sOS_ControlBlock._E_MSP_Task = ( sOS_ControlBlock._S_MSP_Task - MainStackSize ) ;
+	// Align 8 bytes as space between Main stack and Tasks stack
+	sOS_ControlBlock.PSP_TaskLocator = ( sOS_ControlBlock._E_MSP_Task - 8 );
+}
+unsigned char IDLE_Led;
+void MYRTOS_IDLE_Task()
+{
+	while(1)
+	{
+		IDLE_Led ^= 1;
+		__asm("NOP");
+	}
+}
+
+eOS_ErrorState MYRTOS_CreateTask(sOS_Task_ControlBlock* Task_TCB)
+{
+	eOS_ErrorState err = NOERROR;
+
+	// Create Task Stack
+	Task_TCB->_S_PSP_Task = sOS_ControlBlock.PSP_TaskLocator;
+	Task_TCB->_E_PSP_Task = ( Task_TCB->_S_PSP_Task - Task_TCB->Stack_Size );
+
+	// Check if Task Stack size exceeded the stack limit
+	if( Task_TCB->_E_PSP_Task < (unsigned int)&_eheap )
+	{
+		return TASK_EXCEED_STACKSIZE;
+	}
+
+	// Align 8 bytes as space between Task stack and Next Task stack
+	sOS_ControlBlock.PSP_TaskLocator = ( Task_TCB->_E_PSP_Task - 8 );
+
+	// Initialize PSP Task Stack
+	MYRTOS_Create_TaskStack(Task_TCB);
+
+	// Add Task to Task list
+	sOS_ControlBlock.OS_Tasks[sOS_ControlBlock.NoOfActiveTasks++] = Task_TCB;
+
+	// Update Task State
+	Task_TCB->eOS_TaskState = TASK_SUSPEND;
+
+ 	return err;
+}
+
+
+eOS_ErrorState MYRTOS_ActivateTask(sOS_Task_ControlBlock* Task_TCB)
+{
+	eOS_ErrorState err = NOERROR;
+
+	// Update Task State
+	Task_TCB->eOS_TaskState = TASK_WAITING;
+
+	// Trigger SVC To Activate Task
+	OS_SVC_Set(ACTIVATE_TASK);
+
+ 	return err;
+
+}
+
+eOS_ErrorState MYRTOS_TerminateTask(sOS_Task_ControlBlock* Task_TCB)
+{
+	eOS_ErrorState err = NOERROR;
+
+	// Update Task State
+	Task_TCB->eOS_TaskState = TASK_SUSPEND;
+
+	// Trigger SVC To Terminate Task
+	OS_SVC_Set(TERMINATE_TASK);
+
+ 	return err;
+}
+void MYRTOS_Create_TaskStack(sOS_Task_ControlBlock* Task_TCB)
+{
+	/*Task Frame
+	 * =====
+	 * xPSR
+	 * PC (Next Instruction that should run)
+	 * LR ( Return Register which is saved in the stack before task switches)
+	 * r12
+	 * r3
+	 * r2
+	 * r1
+	 * r0
+	 * =====
+	 * r4,r5,r6,r7,r8,r9,r10,r11 -> ( Saved/Restored Manually)
+	 */
+	Task_TCB->Current_PSP_Location = (unsigned int*)Task_TCB->_S_PSP_Task;
+
+	Task_TCB->Current_PSP_Location--;
+	// Dummy XPSR where XPSR.T=1 -> to avoid Bus Fault
+	*(Task_TCB->Current_PSP_Location) = 0x01000000;
+
+	Task_TCB->Current_PSP_Location--;
+	// PC -> Execution starts from the Task Entry
+	*(Task_TCB->Current_PSP_Location) = (unsigned int)Task_TCB->pTaskEntry;
+
+	Task_TCB->Current_PSP_Location--;
+	// Dummy LR -> Processor reset value
+	*(Task_TCB->Current_PSP_Location) = 0xFFFFFFFF;
+
+	for( int i = 0 ; i < 13 ; i++ )
+	{
+		Task_TCB->Current_PSP_Location--;
+		// r(0....12)
+		*(Task_TCB->Current_PSP_Location) = 0;
+	}
+
+}
+
+void OS_SVC_Set(eSVC_ID SVC_ID)
+{
+ 	switch( SVC_ID )
+ 	{
+ 	case ACTIVATE_TASK:
+ 		__asm(" SVC #0x0");   //Activate Task
+ 		break;
+ 	case TERMINATE_TASK:
+ 		__asm(" SVC #0x1");   //Terminate Task
+ 		break;
+ 	case TASKWAITING:
+ 		__asm(" SVC #0x2");   // Wait For Task
+ 		break;
+ 	}
+}
+
+void OS_SVC_Services(int* StackFramePointer )
+{
+	// OS_SVC_Set Stack -> ro -> StackFramePointer
+	// OS_SVC_Set Stack : r0,r1,r2,23,r12,LR,PC,XPSR
+
+	unsigned char SVC_Number;
+
+	SVC_Number =  *( (unsigned char*)( (unsigned char*)(StackFramePointer[6]) -2) );
+
+ 	switch( SVC_Number )
+ 	{
+ 	case ACTIVATE_TASK:
+ 	case TERMINATE_TASK:
+ 		// Update Tasks Table/Ready Queue
+ 		MYRTOS_TaskScheduler();
+ 		// Check if OS is in Running state ->
+ 		if( sOS_ControlBlock.eOS_Modes == OS_RUNNING )
+ 		{
+ 			if( strcmp(sOS_ControlBlock.Current_Task->TaskName ,"Idle_Task" ) != 0 )
+ 			{
+ 				//
+ 				Decide_whatNext();
+
+ 				//2. Trigger PENDSV -> ( Switch Context/Restore)
+ 				OS_Trigger_PendSV();
+ 			}
+ 		}
+ 		break;
+ 	case TASKWAITING:
+
+ 		break;
+ 	}
+
+}
+
+void MYRTOS_TaskScheduler()
+{
+	int i = 0, flag = 0, Priority = 1000;
+	sOS_Task_ControlBlock* temp = NULL;
+
+	//1. Update Tasks Table -> Bubble sort task in Tasks Table based on Priority
+	BubbleSort();
+	//2. Free Ready Queue
+	while( FIFO_Dequeue(&ReadyQueue, &temp) != FIFO_EMPTY );
+	//3. Update Ready Queue
+	while( i < sOS_ControlBlock.NoOfActiveTasks )
+	{
+		if( sOS_ControlBlock.OS_Tasks[i]->eOS_TaskState != TASK_SUSPEND && sOS_ControlBlock.OS_Tasks[i]->Priority != Priority && flag == 0)
+		{
+			// Update Task State
+			sOS_ControlBlock.OS_Tasks[i]->eOS_TaskState = TASK_READY;
+			// Add task to Ready Queue
+			FIFO_Enqueue(&ReadyQueue , sOS_ControlBlock.OS_Tasks[i] );
+
+			Priority = sOS_ControlBlock.OS_Tasks[i]->Priority;
+			flag =1;
+		}
+		else if( sOS_ControlBlock.OS_Tasks[i]->eOS_TaskState != TASK_SUSPEND && sOS_ControlBlock.OS_Tasks[i]->Priority == Priority )
+		{
+			// Update Task State
+			sOS_ControlBlock.OS_Tasks[i]->eOS_TaskState = TASK_READY;
+			// Add task to Ready Queue
+			FIFO_Enqueue(&ReadyQueue , sOS_ControlBlock.OS_Tasks[i] );
+		}
+		else if( sOS_ControlBlock.OS_Tasks[i]->Priority >= Priority )
+		{
+			break;
+		}
+		i++;
+	}
+}
+
+void BubbleSort()
+{
+	int i ,j ,SwapFlag;
+	sOS_Task_ControlBlock* temp = NULL;
+
+	for( i = 0 ; i < (sOS_ControlBlock.NoOfActiveTasks - 1) ; i++)
+	{
+		SwapFlag = 0;
+		for( j = 0 ; j < (sOS_ControlBlock.NoOfActiveTasks - i - 1) ; j++ )
+		{
+			if( sOS_ControlBlock.OS_Tasks[j]->Priority > sOS_ControlBlock.OS_Tasks[j+1]->Priority )
+			{
+				temp = sOS_ControlBlock.OS_Tasks[j];
+				sOS_ControlBlock.OS_Tasks[j] = sOS_ControlBlock.OS_Tasks[j+1];
+				sOS_ControlBlock.OS_Tasks[j+1] = temp;
+				SwapFlag = 1;
+			}
+		}
+		if(SwapFlag == 0)
+			break;
+	}
+}
+
+void Decide_whatNext()
+{
+	// Get Next Task to run from ReadyQueue
+	FIFO_Dequeue(&ReadyQueue, &(sOS_ControlBlock.Next_Task) );
+	// Update Task State
+	sOS_ControlBlock.Next_Task->eOS_TaskState = TASK_RUNNING;
+	// Put Task to run ReadyQueue -> Round-Robin Algorithm
+	FIFO_Enqueue(&ReadyQueue , sOS_ControlBlock.Next_Task );
+}
+__attribute(( naked )) void PendSV_Handler()
+{
+	//=======================================
+	// Save The Context of The Current TASK
+	//=======================================
+
+	// Get the Current Task Stack "Current PSP"
+	//OS_GetPSP( sOS_ControlBlock.Current_Task->Current_PSP_Location );
+	__asm volatile(" mrs %[out],PSP " : [out] "=r" (sOS_ControlBlock.Current_Task->Current_PSP_Location) );
+
+	// Using this Current_PSP_Location (Pointer) to store (R4 to R11)
+	sOS_ControlBlock.Current_Task->Current_PSP_Location--;
+	__asm volatile("mov %0,r4 " : "=r" (*(sOS_ControlBlock.Current_Task->Current_PSP_Location))  );
+	sOS_ControlBlock.Current_Task->Current_PSP_Location--;
+	__asm volatile("mov %0,r5 " : "=r" (*(sOS_ControlBlock.Current_Task->Current_PSP_Location))  );
+	sOS_ControlBlock.Current_Task->Current_PSP_Location--;
+	__asm volatile("mov %0,r6 " : "=r" (*(sOS_ControlBlock.Current_Task->Current_PSP_Location))  );
+	sOS_ControlBlock.Current_Task->Current_PSP_Location--;
+	__asm volatile("mov %0,r7 " : "=r" (*(sOS_ControlBlock.Current_Task->Current_PSP_Location))  );
+	sOS_ControlBlock.Current_Task->Current_PSP_Location--;
+	__asm volatile("mov %0,r8 " : "=r" (*(sOS_ControlBlock.Current_Task->Current_PSP_Location))  );
+	sOS_ControlBlock.Current_Task->Current_PSP_Location--;
+	__asm volatile("mov %0,r9 " : "=r" (*(sOS_ControlBlock.Current_Task->Current_PSP_Location))  );
+	sOS_ControlBlock.Current_Task->Current_PSP_Location--;
+	__asm volatile("mov %0,r10 " : "=r" (*(sOS_ControlBlock.Current_Task->Current_PSP_Location))  );
+	sOS_ControlBlock.Current_Task->Current_PSP_Location--;
+	__asm volatile("mov %0,r11 " : "=r" (*(sOS_ControlBlock.Current_Task->Current_PSP_Location))  );
+
+	//=======================================
+	// Restore The Context of The Next TASK
+	//=======================================
+
+	if ( sOS_ControlBlock.Current_Task != NULL )
+	{
+		sOS_ControlBlock.Current_Task = sOS_ControlBlock.Next_Task ;
+		sOS_ControlBlock.Next_Task = NULL ;
+	}
+
+	__asm volatile("mov r11,%0 " : : "r" (*(sOS_ControlBlock.Current_Task->Current_PSP_Location))  );
+	sOS_ControlBlock.Current_Task->Current_PSP_Location++ ;
+	__asm volatile("mov r10,%0 " : : "r" (*(sOS_ControlBlock.Current_Task->Current_PSP_Location))  );
+	sOS_ControlBlock.Current_Task->Current_PSP_Location++ ;
+	__asm volatile("mov r9,%0 " : : "r" (*(sOS_ControlBlock.Current_Task->Current_PSP_Location))  );
+	sOS_ControlBlock.Current_Task->Current_PSP_Location++ ;
+	__asm volatile("mov r8,%0 " : : "r" (*(sOS_ControlBlock.Current_Task->Current_PSP_Location))  );
+	sOS_ControlBlock.Current_Task->Current_PSP_Location++ ;
+	__asm volatile("mov r7,%0 " : : "r" (*(sOS_ControlBlock.Current_Task->Current_PSP_Location))  );
+	sOS_ControlBlock.Current_Task->Current_PSP_Location++ ;
+	__asm volatile("mov r6,%0 " : : "r" (*(sOS_ControlBlock.Current_Task->Current_PSP_Location))  );
+	sOS_ControlBlock.Current_Task->Current_PSP_Location++ ;
+	__asm volatile("mov r5,%0 " : : "r" (*(sOS_ControlBlock.Current_Task->Current_PSP_Location))  );
+	sOS_ControlBlock.Current_Task->Current_PSP_Location++ ;
+	__asm volatile("mov r4,%0 " : : "r" (*(sOS_ControlBlock.Current_Task->Current_PSP_Location))  );
+	sOS_ControlBlock.Current_Task->Current_PSP_Location++ ;
+
+	// Update PSP and Exit
+	OS_SetPSP( sOS_ControlBlock.Current_Task->Current_PSP_Location );
+
+	__asm volatile("BX LR");
+}
+unsigned char SysTick_Led;
+void SysTick_Handler(void)
+{
+	SysTick_Led ^= 1;
+	// Determine Next Task From ReadyQueue
+	Decide_whatNext();
+
+	// Trigger PENDSV -> ( Switch Context/Restore)
+	OS_Trigger_PendSV();
+
+}

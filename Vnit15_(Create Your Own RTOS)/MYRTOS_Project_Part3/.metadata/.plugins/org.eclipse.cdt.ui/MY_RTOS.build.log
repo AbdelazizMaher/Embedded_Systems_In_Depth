@@ -1,0 +1,16 @@
+10:57:54 **** Incremental Build of configuration Debug for project MY_RTOS ****
+make -j16 all 
+arm-none-eabi-gcc -gdwarf-2 -o "MY_RTOS.axf" @"objects.list"   -mcpu=cortex-m3 -T"C:\Users\Abdel\OneDrive\Documents\EmbeddedSystemsInDepth\STM32CUBE_IDE_Diploma_Workspace\Unit15_Create_Your_Own_RTOS\Create_Your_Own_RTOS\MY_RTOS\STM32F103C6TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="MY_RTOS.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: MY_RTOS.axf
+ 
+arm-none-eabi-size   MY_RTOS.axf 
+arm-none-eabi-objdump -h -S  MY_RTOS.axf  > "MY_RTOS.list"
+   text	   data	    bss	    dec	    hex	filename
+   5304	      8	   2904	   8216	   2018	MY_RTOS.axf
+Finished building: default.size.stdout
+ 
+Finished building: MY_RTOS.list
+ 
+
+10:57:55 Build Finished. 0 errors, 0 warnings. (took 436ms)
+
