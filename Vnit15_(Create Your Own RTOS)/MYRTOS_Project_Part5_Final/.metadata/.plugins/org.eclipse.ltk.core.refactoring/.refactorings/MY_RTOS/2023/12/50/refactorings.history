@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">&#x0A;<refactoring comment="Rename resource &apos;MY_RTOS/Src/Session07_SVC_PendSV Exceptions.c&apos; to &apos;main.c&apos;" description="Rename resource &apos;Session07_SVC_PendSV Exceptions.c&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="Src/Session07_SVC_PendSV Exceptions.c" name="main.c" stamp="1702477043150" updateReferences="true"/>&#x0A;<refactoring comment="Rename resource &apos;MY_RTOS/MYxx_RTOS/inc&apos; to &apos;Inc&apos;" description="Rename resource &apos;inc&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="MYxx_RTOS/inc" name="Inc" stamp="1702480059128" updateReferences="true"/>
+</session>

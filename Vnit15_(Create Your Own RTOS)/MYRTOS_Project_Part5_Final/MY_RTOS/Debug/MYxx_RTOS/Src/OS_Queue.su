@@ -1,0 +1,4 @@
+../MYxx_RTOS/Src/OS_Queue.c:12:12:FIFO_Init	24	static
+../MYxx_RTOS/Src/OS_Queue.c:26:12:FIFO_Enqueue	16	static
+../MYxx_RTOS/Src/OS_Queue.c:44:12:FIFO_Dequeue	16	static
+../MYxx_RTOS/Src/OS_Queue.c:63:12:FIFO_IsFull	16	static

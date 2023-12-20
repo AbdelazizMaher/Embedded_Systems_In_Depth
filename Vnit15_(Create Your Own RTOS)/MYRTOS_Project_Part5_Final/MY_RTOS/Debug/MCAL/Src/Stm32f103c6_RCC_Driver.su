@@ -1,0 +1,4 @@
+../MCAL/Src/Stm32f103c6_RCC_Driver.c:54:10:MCAL_RCC_GetSysClkFreq	4	static
+../MCAL/Src/Stm32f103c6_RCC_Driver.c:83:10:MCAL_RCC_GetHClkFreq	8	static
+../MCAL/Src/Stm32f103c6_RCC_Driver.c:90:10:MCAL_RCC_GetPClk1Freq	8	static
+../MCAL/Src/Stm32f103c6_RCC_Driver.c:96:10:MCAL_RCC_GetPClk2Freq	8	static
