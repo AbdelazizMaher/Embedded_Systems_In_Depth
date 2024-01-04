@@ -32,7 +32,7 @@ FIFO_state FIFO_Enqueue(FIFO_t* add , element_type item )
     *(add->head) = item;
     add->count++;
 
-    if( add->head == ( add->base + ( add->length*sizeof(element_type) ) ) )
+    if( add->head == ( add->base + ( add->length)  ) )
     	add->head = add->base;
     else
     	{add->head++;}
@@ -51,7 +51,7 @@ FIFO_state FIFO_Dequeue(FIFO_t* remove, element_type item)
     item = *(remove->tail);
     remove->count--;
 
-    if( remove->tail == ( remove->base + ( remove->length*sizeof(element_type) ) ) )
+    if( remove->tail == ( remove->base + ( remove->length) ) )
     	remove->tail = remove->base;
     else
     	remove->tail++;
