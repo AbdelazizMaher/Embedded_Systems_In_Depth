@@ -1,0 +1,47 @@
+﻿/*@!Encoding:65001*/
+includes
+{
+  
+}
+
+variables
+{
+  int Speed = 0;
+  
+  message SpeedVAL_Message iSpeedVAL;
+}
+
+on start
+{
+  write("[ECU2]: Eng.Abdelaziz Maher -> Case Study 4 Learn-in-depth.com ");
+}
+
+on message ACC_CMD_Message
+{
+  if( this.ACC_CMD_Signal.phys == 1 ) // ACC On
+  {
+    if( Speed == 255 )
+    {
+      Speed = 255;
+    }
+    else
+    {
+      Speed++;
+    }   
+  }
+  else // ACC Off
+  {
+    if( Speed == 0 )
+    {
+      Speed = 0;
+    }
+    else
+    {
+      Speed--;
+    }
+  }
+  
+  iSpeedVAL.SpeedVAL_Signal.phys =  Speed; 
+  
+  output(iSpeedVAL);
+}

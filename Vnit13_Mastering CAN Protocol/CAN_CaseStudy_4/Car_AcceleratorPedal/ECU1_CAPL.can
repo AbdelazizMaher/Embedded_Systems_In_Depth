@@ -1,0 +1,39 @@
+﻿/*@!Encoding:65001*/
+includes
+{
+  
+}
+
+variables
+{
+  msTimer ACC_CMD_Timer;
+  const int TimerPeriod = 1000;
+  
+  message ACC_CMD_Message iACC_CMD;
+  int ACC_VAL = 0;
+}
+
+on start
+{
+  write("[ECU1]: Eng.Abdelaziz Maher -> Case Study 4 Learn-in-depth.com ");
+  
+  setTimer( ACC_CMD_Timer , TimerPeriod );
+}
+
+on message SpeedVAL_Message
+{
+  write("[ECU1]: Received Message from ECU2 ");
+}
+
+on timer ACC_CMD_Timer
+{
+  write("[ECU1]: Timer Callback ");
+  
+  //ACC_VAL ^= 1;
+  ACC_VAL = @sysvar::ACC_CMD_SystemVAL;
+  iACC_CMD.ACC_CMD_Signal.phys =  ACC_VAL; 
+  
+  output(iACC_CMD);
+  
+  setTimer( ACC_CMD_Timer , TimerPeriod );  
+}
