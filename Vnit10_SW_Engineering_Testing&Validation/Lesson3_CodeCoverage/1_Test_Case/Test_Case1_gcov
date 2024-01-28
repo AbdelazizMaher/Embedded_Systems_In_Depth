@@ -1,0 +1,48 @@
+gcov -a -b -c -d  *.c
+Processing file 1 out of 6
+Processing file 2 out of 6
+Processing file 3 out of 6
+Processing file 4 out of 6
+Processing file 5 out of 6
+Processing file 6 out of 6
+File 'AlarmActuator.c'
+Lines executed:62.50% of 16
+Branches executed:100.00% of 2
+Taken at least once:50.00% of 2
+Calls executed:50.00% of 2
+Creating 'AlarmActuator.c.gcov'
+
+File 'AlarmMonitor.c'
+Lines executed:21.05% of 19
+Branches executed:0.00% of 2
+Taken at least once:0.00% of 2
+Calls executed:25.00% of 4
+Creating 'AlarmMonitor.c.gcov'
+
+File 'MainAlgorithm.c'
+Lines executed:87.50% of 8
+Branches executed:100.00% of 2
+Taken at least once:50.00% of 2
+Calls executed:0.00% of 1
+Creating 'MainAlgorithm.c.gcov'
+
+File 'PressureSensor.c'
+Lines executed:64.29% of 14
+No branches
+Calls executed:66.67% of 3
+Creating 'PressureSensor.c.gcov'
+
+File 'driver.c'
+Lines executed:60.00% of 10
+Branches executed:0.00% of 2
+Taken at least once:0.00% of 2
+Calls executed:100.00% of 2
+Creating 'driver.c.gcov'
+
+File 'main.c'
+Lines executed:87.50% of 40
+Branches executed:100.00% of 10
+Taken at least once:50.00% of 10
+Calls executed:86.36% of 22
+Creating 'main.c.gcov'
+
